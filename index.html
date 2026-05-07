@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Russia Map | Focused Region</title>
+    <style>
+        body {
+    margin: 0;
+    background-color: #050505;
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#map-wrapper {
+    width: 90vw;
+    height: 80vh;
+    /* Убрал отсюда transition: transform, чтобы он не конфликтовал с JS */
+    transition: opacity 0.8s ease; 
+}
+
+svg { 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: all; 
+    /* ВАЖНО: точка отсчета для математики зума */
+    transform-origin: 0 0 !important; 
+    /* Плавность движения всей карты */
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Обычный стиль регионов */
+path {
+    fill: #0a0a0a !important;
+    stroke: #333 !important;
+    stroke-width: 0.5;
+    transition: fill 0.3s, stroke 0.3s, opacity 0.8s ease;
+    cursor: pointer;
+    /* ВАЖНО: чтобы границы оставались тонкими при зуме */
+    vector-effect: non-scaling-stroke; 
+}
+
+path:hover {
+    fill: #111 !important;
+    stroke: #fff !important;
+}
+
+/* Стиль для изолированного региона в центре */
+.focused-region {
+    fill: #151515 !important;
+    stroke: #fff !important;
+    stroke-width: 1.5; /* Здесь можно чуть больше для акцента */
+    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.5));
+    pointer-events: none;
+}
+
+/* Уголки-сканеры */
+.scanner-corner {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid #fff;
+    opacity: 0;
+    transition: 0.5s;
+    z-index: 100;
+}
+#tl { top: 30px; left: 30px; border-right: none; border-bottom: none; }
+#tr { top: 30px; right: 30px; border-left: none; border-bottom: none; }
+#bl { bottom: 30px; left: 30px; border-right: none; border-top: none; }
+#br { bottom: 30px; right: 30px; border-left: none; border-top: none; }
+
+.scanning .scanner-corner { 
+    opacity: 1; 
+    /* Добавим эффект пульсации как в Netflix Dark */
+    animation: cornerPulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes cornerPulse {
+    from { transform: scale(1); opacity: 0.5; }
+    to { transform: scale(1.1); opacity: 1; }
+}
+
+/* Тултип */
+#tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: #000;
+    border: 1px solid #fff;
+    padding: 8px 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    opacity: 0;
+    z-index: 1000;
+}
+
+#back-button {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000; /* Добавил фон, чтобы кнопки было видно */
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 12px 30px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.5s;
+    z-index: 200;
+    letter-spacing: 4px;
+}
+#back-button.visible { opacity: 1; visibility: visible; }
+#back-button:hover { background: #fff; color: #000; }
+#region-title-display {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4vw;
+    font-weight: 100;
+    text-transform: uppercase;
+    letter-spacing: 15px;
+    color: #fff;
+    opacity: 0;
+    z-index: 500;
+    text-align: center;
+    pointer-events: none;
+    transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+    filter: blur(10px);
+}
+
+#region-title-display.visible {
+    opacity: 1;
+    filter: blur(0);
+    letter-spacing: 25px; /* Текст как бы расширяется */
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+}
+
+/* Скрытие карты */
+.map-hidden {
+    opacity: 0 !important;
+    transform: scale(1.2); /* Эффект пролета сквозь карту */
+    transition: opacity 1s ease, transform 1.5s ease-in !important;
+}
+
+/* Стили сканера (уже были, но убедись, что анимация есть) */
+.scanning .scanner-corner {
+    opacity: 1;
+    animation: cornerMoving 3s infinite alternate;
+}
+
+@keyframes cornerMoving {
+    from { transform: scale(1); border-color: #444; }
+    to { transform: scale(1.05); border-color: #fff; }
+}
+.map-hidden {
+    opacity: 0 !important;
+    transform: scale(1.2); 
+    transition: opacity 1s ease, transform 1.5s ease-in !important;
+    /* ВАЖНО: карта перестает реагировать на мышь, когда она скрыта */
+    pointer-events: none !important; 
+}
+
+/* Блокировщик кликов */
+#click-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 400; /* Средний слой */
+    display: none;
+    background: transparent;
+}
+
+/* Кнопка "Назад" - поднимаем её выше блокировщика */
+#back-button {
+    z-index: 1000 !important; /* Самый высокий слой */
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* ... остальные твои стили ... */
+}
+
+/* Текст названия региона - тоже выше */
+#region-title-display {
+    z-index: 500; /* Выше блокировщика (400) */
+    position: fixed;
+    /* ... остальные твои стили ... */
+}
+
+/* Уголки сканера - можно оставить на фоне или тоже поднять */
+.scanner-corner {
+    z-index: 450; 
+}
+
+#regional-map-container path {
+    fill: #919191 !important;
+    stroke: rgba(255, 255, 255, 0.3) !important;
+    stroke-width: 0.5px !important;
+    transition: all 0.4s ease;
+    vector-effect: non-scaling-stroke;
+}
+
+/* 2. Подсветка района при наведении */
+#regional-map-container path:hover {
+    fill: #383838 !important;
+    stroke: #ffffff !important;
+    stroke-width: 1px !important;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8)) !important;
+    cursor: pointer;
+}
+
+/* 3. ОСОБЫЙ СТИЛЬ ДЛЯ BORDER (Границы области) */
+/* В твоем Gist у границы есть label="Border" */
+#regional-map-container [inkscape\:label="Border"],
+#regional-map-container [id="path5"] {
+    fill: none !important;
+    stroke: #444444 !important; /* Тёмно-серый цвет */
+    stroke-width: 1.5px !important;
+    pointer-events: none !important; /* Мышь её не видит */
+    filter: none !important;
+}
+
+/* 4. Убираем белый фон, если он есть */
+#regional-map-container svg {
+    background: transparent !important;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <div id="tl" class="scanner-corner"></div>
+    <div id="tr" class="scanner-corner"></div>
+    <div id="bl" class="scanner-corner"></div>
+    <div id="br" class="scanner-corner"></div>
+
+    <div id="tooltip"></div>
+    <button id="back-button">НАЗАД К КАРТЕ</button>
+    <div id="map-wrapper"></div>
+    <div id="region-title-display"></div>
+    <div id="click-blocker"></div>
+    <div id="regional-map-container" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:70vw; height:70vh; display:none; opacity:0; transition: opacity 1s; z-index: 501;"></div>
+
+
+<script>
+   const wrapper = document.getElementById('map-wrapper');
+const tooltip = document.getElementById('tooltip');
+const backBtn = document.getElementById('back-button');
+const titleDisplay = document.getElementById('region-title-display');
+// Добавим переменную для контейнера региона (убедись, что такой ID есть в HTML)
+const regionalContainer = document.getElementById('regional-map-container'); 
+
+fetch('Blank_map_of_Russia-gray.svg')
+    .then(res => res.text())
+    .then(data => {
+        wrapper.innerHTML = data;
+        const svg = wrapper.querySelector('svg');
+        const paths = svg.querySelectorAll('path');
+
+        paths.forEach(path => {
+            if (path.id.toLowerCase().includes('border')) {
+                path.style.pointerEvents = 'none';
+                return;
+            }
+
+            const rawId = path.getAttribute('id') || "";
+            const name = (path.getAttribute('title') || rawId || "РЕГИОН").replace(/_/g, ' ');
+
+            path.addEventListener('mouseenter', () => {
+                tooltip.innerText = name;
+                tooltip.style.opacity = '1';
+            });
+
+            path.addEventListener('mousemove', (e) => {
+                tooltip.style.left = e.clientX + 20 + 'px';
+                tooltip.style.top = e.clientY + 20 + 'px';
+            });
+
+            path.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
+
+            path.addEventListener('click', (e) => {
+    if (document.body.classList.contains('scanning')) return;
+    e.stopPropagation();
+
+    wrapper.classList.add('map-hidden');
+    tooltip.style.opacity = '0';
+    tooltip.style.visibility = 'hidden';
+    document.body.classList.add('scanning');
+
+    if (rawId === 'RU-KEM' || name.includes('Кемеровская')) {
+        // Внутри обработки клика на Кемеровскую область:
+fetch('Outline_Map_of_Kemerovo_Oblast.svg')
+    .then(r => r.text())
+    .then(svgKEM => {
+        regionalContainer.innerHTML = svgKEM;
+        regionalContainer.style.display = 'block';
+        
+        const kemSvg = regionalContainer.querySelector('svg');
+        if(kemSvg) {
+            kemSvg.style.width = "100%";
+            kemSvg.style.height = "100%";
+
+            const allPaths = kemSvg.querySelectorAll('path');
+            allPaths.forEach(el => {
+                const label = el.getAttribute('inkscape:label') || "";
+                
+                // Если это НЕ граница (не Border), вешаем тултип
+                if (label !== "Border") {
+                    el.addEventListener('mouseenter', () => {
+                        tooltip.innerText = label; // Берем "Мариинский район" и т.д.
+                        tooltip.style.visibility = 'visible';
+                        tooltip.style.opacity = '1';
+                    });
+                    el.addEventListener('mousemove', (ev) => {
+                        tooltip.style.left = ev.clientX + 20 + 'px';
+                        tooltip.style.top = ev.clientY + 20 + 'px';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        tooltip.style.opacity = '0';
+                    });
+                }
+            });
+            }
+
+            setTimeout(() => {
+                regionalContainer.style.opacity = '1';
+                backBtn.classList.add('visible');
+            }, 800);
+        });
+    } else {
+        // Обычный текст для других регионов
+        titleDisplay.innerText = name;
+        setTimeout(() => {
+            titleDisplay.classList.add('visible');
+            backBtn.classList.add('visible');
+        }, 800);
+    }
+});
+
+        });
+    });
+
+backBtn.addEventListener('click', () => {   
+    wrapper.classList.remove('map-hidden');
+    document.body.classList.remove('scanning');
+    titleDisplay.classList.remove('visible');
+    backBtn.classList.remove('visible');
+    
+    // Скрываем карту области
+    if(regionalContainer) {
+        regionalContainer.style.opacity = '0';
+    }
+
+    setTimeout(() => {
+        tooltip.style.visibility = 'visible';
+        titleDisplay.innerText = '';
+        if(regionalContainer) {
+            regionalContainer.style.display = 'none';
+            regionalContainer.innerHTML = '';
+        }
+    }, 1000);
+});
+
+</script>
+</body>
+</html>
