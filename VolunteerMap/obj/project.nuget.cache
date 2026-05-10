@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+7RPJaLK4rM=",
+  "dgSpecHash": "yzWW1uzBW3I=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Blaym\\Desktop\\Диплом\\VolunteerMap\\VolunteerMap\\VolunteerMap.csproj",
+  "projectFilePath": "C:\\Users\\Blaym\\Desktop\\Диплом\\site-valanter\\VolunteerMap\\VolunteerMap.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Blaym\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Blaym\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
