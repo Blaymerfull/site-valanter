@@ -458,4 +458,4 @@ C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.pdb
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.genruntimeconfig.cache
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0\ref\VolunteerMap.dll
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\tsgqwxreuw-{0}-2mchsg2c0w-2mchsg2c0w.gz
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\tsgqwxreuw-{0}-tqruwxtv8h-tqruwxtv8h.gz
