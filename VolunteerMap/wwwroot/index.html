@@ -165,18 +165,6 @@ path:hover {
     pointer-events: none !important; 
 }
 
-/* Блокировщик кликов */
-#click-blocker {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 400; /* Средний слой */
-    display: none;
-    background: transparent;
-}
-
 /* Кнопка "Назад" - поднимаем её выше блокировщика */
 #back-button {
     z-index: 1000 !important; /* Самый высокий слой */
@@ -232,6 +220,46 @@ path:hover {
     background: transparent !important;
 }
 
+.centers-hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.centers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
+
+.center-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.center-card:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+#regional-map-container, #map-wrapper {
+    pointer-events: auto !important;
+}
+
+#regional-map-container svg path, #map-wrapper svg path {
+    pointer-events: auto !important;
+    cursor: pointer;
+}
 
 
 
@@ -248,11 +276,12 @@ path:hover {
     <button id="back-button">НАЗАД К КАРТЕ</button>
     <div id="map-wrapper"></div>
     <div id="region-title-display"></div>
-    <div id="click-blocker"></div>
     <div id="regional-map-container" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:70vw; height:70vh; display:none; opacity:0; transition: opacity 1s; z-index: 501;"></div>
     <!-- Контейнер для волонтерских центров (изначально скрыт) -->
-    <div id="centers-view" style="display:none; opacity:0; transition: opacity 0.8s;">
-    <div id="centers-list"></div>
+    <div id="centers-view" class="centers-hidden">
+    <div id="centers-list" class="centers-grid">
+        <!-- Сюда JS будет вставлять карточки -->
+    </div>
 </div>
 
 
@@ -264,7 +293,7 @@ const titleDisplay = document.getElementById('region-title-display');
 // Добавим переменную для контейнера региона (убедись, что такой ID есть в HTML)
 const regionalContainer = document.getElementById('regional-map-container'); 
 
-fetch('Blank_map_of_Russia-gray.svg')
+fetch('Blank_map_of_Russia-gray.svg')   
     .then(res => res.text())
     .then(data => {
         wrapper.innerHTML = data;
@@ -293,13 +322,10 @@ fetch('Blank_map_of_Russia-gray.svg')
             path.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
 
             path.addEventListener('click', (e) => {
-    if (document.body.classList.contains('scanning')) return;
-    e.stopPropagation();
-
-    wrapper.classList.add('map-hidden');
-    tooltip.style.opacity = '0';
-    tooltip.style.visibility = 'hidden';
-    document.body.classList.add('scanning');
+            wrapper.classList.add('map-hidden');
+            tooltip.style.opacity = '0';
+            tooltip.style.visibility = 'hidden';
+            document.body.classList.add('scanning');
 
     if (rawId === 'RU-KEM' || name.includes('Кемеровская')) {
         // Внутри обработки клика на Кемеровскую область:
@@ -309,41 +335,66 @@ fetch('Outline_Map_of_Kemerovo_Oblast.svg')
         regionalContainer.innerHTML = svgKEM;
         regionalContainer.style.display = 'block';
         
+        // ВАЖНО: Убираем любые преграды
+        const clickBlocker = document.getElementById('click-blocker');
+        if (clickBlocker) clickBlocker.style.display = 'none';
+        document.body.classList.remove('scanning');
+
         const kemSvg = regionalContainer.querySelector('svg');
         if(kemSvg) {
-            kemSvg.style.width = "100%";
-            kemSvg.style.height = "100%";
-
+            kemSvg.style.pointerEvents = 'all'; // Разрешаем события внутри SVG
+            
             const allPaths = kemSvg.querySelectorAll('path');
             allPaths.forEach(el => {
-                // Внутри цикла по районам Кемеровской области:
-                el.addEventListener('click', (ev) => {
-                    console.log("Нажат район:", el.getAttribute('inkscape:label')); // Добавь это
-                    ev.stopPropagation();
-                    
-                    // Получаем ID района. 
-                    // ВАЖНО: в БД в таблице Districts колонку DistrictName заполни так же, 
-                    // как называется район в inkscape:label (например, "Мариинский район")
-                    const districtName = el.getAttribute('inkscape:label');
+                const label = el.getAttribute('inkscape:label') || "";
+                
+                if (label !== "Border") {
+                    el.style.cursor = 'pointer'; // Делаем курсор-палец
 
-                    // 1. Прячем карту области в стиле Netflix
-                    regionalContainer.style.opacity = '0';
-                    setTimeout(() => { regionalContainer.style.display = 'none'; }, 800);
+                    // Ховеры (уже работают, но обновим для надежности)
+                   el.onmouseenter = () => {
+                        tooltip.innerText = label;
+                        tooltip.style.opacity = '1';
+                        tooltip.style.visibility = 'visible';
+                    };
+                   
+                    el.onmousemove = (ev) => {
+                        tooltip.style.left = ev.clientX + 20 + 'px';
+                        tooltip.style.top = ev.clientY + 20 + 'px';
+                    };
 
-                    // 2. Запрос к твоему серверу (создадим новый метод в контроллере для поиска по имени)
-                    fetch(`/api/map/centers-by-district?name=${encodeURIComponent(districtName)}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            renderCenters(data);
-                        });
-                });});
-            }
+                    // КЛИК — ТВОЯ ГЛАВНАЯ ЦЕЛЬ
+                    el.onclick = (ev) => {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        
+                        console.log("КЛИКНУЛИ ПО:", label); // Проверь это в консоли (F12)!
 
-            setTimeout(() => {
-                regionalContainer.style.opacity = '1';
-                backBtn.classList.add('visible');
-            }, 800);
-        });
+                        // 1. Анимация исчезновения карты
+                        regionalContainer.style.transition = 'opacity 0.5s ease';
+                        regionalContainer.style.opacity = '0';
+                        
+                        // 2. Запрос к базе данных
+                        // Используем точное имя из inkscape:label
+                        fetch(`/api/map/centers-by-district?name=${encodeURIComponent(label)}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                setTimeout(() => {
+                                    regionalContainer.style.display = 'none';
+                                    renderCenters(data); // Рисуем карточки волонтеров
+                                }, 500);
+                            })
+                            .catch(err => console.error("Ошибка API:", err));
+                    };
+                }
+            });
+        }
+
+        setTimeout(() => {
+            regionalContainer.style.opacity = '1';
+            backBtn.classList.add('visible');
+        }, 800);
+    });
     } else {
         // Обычный текст для других регионов
         titleDisplay.innerText = name;
@@ -381,21 +432,26 @@ function renderCenters(data) {
     const view = document.getElementById('centers-view');
     const list = document.getElementById('centers-list');
     
-    list.innerHTML = ''; // Очистка
+    list.innerHTML = ''; // Чистим
+    
+    if (data.length === 0) {
+        list.innerHTML = '<h2 style="color:white">В этом районе пока нет центров</h2>';
+    }
+
     data.forEach(c => {
         list.innerHTML += `
-            <div class="center-card" style="color:white; background: rgba(0,0,0,0.5); padding: 20px; margin: 10px;">
-                <img src="${c.imageUrl}" style="width:200px">
+            <div class="center-card">
+                ${c.imageUrl ? `<img src="${c.imageUrl}" style="width:100%; border-radius:4px;">` : ''}
                 <h2>${c.name}</h2>
-                <p>${c.description}</p>
-                <p>Адрес: ${c.address}</p>
-                <p>Контакты: ${c.contacts}</p>
+                <p>${c.description || 'Описание отсутствует'}</p>
+                <p>📍 ${c.address || 'Адрес не указан'}</p>
+                <p>📞 ${c.contacts || ''}</p>
             </div>
         `;
     });
 
     view.style.display = 'block';
-    setTimeout(() => { view.style.opacity = '1'; }, 100);
+    setTimeout(() => { view.style.opacity = '1'; }, 50);
 }
 </script>
 </body>

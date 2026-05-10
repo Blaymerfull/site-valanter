@@ -3,28 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\models\\volunteercenter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\volunteercenter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\models\\region.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\region.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\models\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\models\\district.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\district.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\wwwroot\\outline_map_of_kemerovo_oblast.svg||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\wwwroot\\outline_map_of_kemerovo_oblast.svg||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -38,98 +18,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Models\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\ApplicationDbContext.cs",
-              "RelativeToolTip": "VolunteerMap\\Models\\ApplicationDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:24:50.766Z",
+              "DocumentIndex": 0,
+              "Title": "Outline_Map_of_Kemerovo_Oblast.svg",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\wwwroot\\Outline_Map_of_Kemerovo_Oblast.svg",
+              "RelativeDocumentMoniker": "VolunteerMap\\wwwroot\\Outline_Map_of_Kemerovo_Oblast.svg",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\wwwroot\\Outline_Map_of_Kemerovo_Oblast.svg",
+              "RelativeToolTip": "VolunteerMap\\wwwroot\\Outline_Map_of_Kemerovo_Oblast.svg",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAgwFEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-05-10T13:41:51.097Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Region.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\Region.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Models\\Region.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\Region.cs",
-              "RelativeToolTip": "VolunteerMap\\Models\\Region.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:24:49.945Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "District.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\District.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Models\\District.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\District.cs",
-              "RelativeToolTip": "VolunteerMap\\Models\\District.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:24:48.394Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VolunteerCenter.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\VolunteerCenter.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Models\\VolunteerCenter.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Models\\VolunteerCenter.cs",
-              "RelativeToolTip": "VolunteerMap\\Models\\VolunteerCenter.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:23:33.74Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MapController.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\MapController.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
-              "RelativeToolTip": "VolunteerMap\\Controllers\\MapController.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAADwvxgAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:18:13.466Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "VolunteerMap\\wwwroot\\index.html",
               "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeToolTip": "VolunteerMap\\wwwroot\\index.html",
-              "ViewState": "AgIAADkBAAAAAAAAAAAAAEEBAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAP8AAAAAAAAAAAAAAA8BAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-05-10T11:15:18.1Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Program.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Program.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Program.cs",
-              "RelativeToolTip": "VolunteerMap\\Program.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwCEAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-10T11:04:17.792Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-10T12:14:11.441Z"
             }
           ]
         }
