@@ -438,7 +438,7 @@ fetch('Blank_map_of_Russia-gray.svg')
                                         el.onclick = (ev) => {
                                             ev.stopPropagation();
                                             regionalContainer.classList.add('fade-out');
-                                            backBtn.classList.remove('visible');
+                                            //backBtn.classList.remove('visible');
 
                                             fetch(`/api/map/centers-by-district?name=${encodeURIComponent(label)}`)
                                                 .then(res => res.json())
@@ -464,7 +464,7 @@ fetch('Blank_map_of_Russia-gray.svg')
                     setTimeout(() => {
                         titleDisplay.classList.add('visible');
                         backBtn.classList.add('visible');
-                    }, 800);
+                    }, 100);
                 }
             });
         });
@@ -572,19 +572,19 @@ function openFullView(center) {
 document.getElementById('close-modal').onclick = function() {
     const modal = document.getElementById('modal-overlay');
     const closeBtn = document.getElementById('close-modal');
-    const backBtnElem = document.getElementById('back-button');
+    const backBtnElem = document.getElementById('back-button'); // Используем то же имя, что и выше
 
     modal.style.opacity = '0';
-    if (closeBtn) closeBtn.style.display = 'none';
+    closeBtn.style.display = 'none';
 
     setTimeout(() => {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; 
+        document.body.style.overflow = 'auto'; // Возвращаем скролл
         
         if (backBtnElem) {
-            backBtnElem.style.opacity = '1';
-            backBtnElem.style.display = 'block'; 
-            backBtnElem.style.pointerEvents = 'auto'; 
+            backBtnElem.style.opacity = '1';       // Возвращаем видимость
+            backBtnElem.style.pointerEvents = 'auto'; // Возвращаем кликабельность
+            backBtnElem.style.display = 'block';   // На всякий случай принудительно показываем
         }
     }, 400);
 };
