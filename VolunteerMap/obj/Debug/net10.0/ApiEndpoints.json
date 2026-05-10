@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "ContainingType": "VolunteerMap.Controllers.MapController",
+    "Method": "GetByDistrictName",
+    "RelativePath": "api/Map/centers-by-district",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

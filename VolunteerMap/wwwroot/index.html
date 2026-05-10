@@ -250,6 +250,10 @@ path:hover {
     <div id="region-title-display"></div>
     <div id="click-blocker"></div>
     <div id="regional-map-container" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:70vw; height:70vh; display:none; opacity:0; transition: opacity 1s; z-index: 501;"></div>
+    <!-- Контейнер для волонтерских центров (изначально скрыт) -->
+    <div id="centers-view" style="display:none; opacity:0; transition: opacity 0.8s;">
+    <div id="centers-list"></div>
+</div>
 
 
 <script>
@@ -312,24 +316,27 @@ fetch('Outline_Map_of_Kemerovo_Oblast.svg')
 
             const allPaths = kemSvg.querySelectorAll('path');
             allPaths.forEach(el => {
-                const label = el.getAttribute('inkscape:label') || "";
-                
-                // Если это НЕ граница (не Border), вешаем тултип
-                if (label !== "Border") {
-                    el.addEventListener('mouseenter', () => {
-                        tooltip.innerText = label; // Берем "Мариинский район" и т.д.
-                        tooltip.style.visibility = 'visible';
-                        tooltip.style.opacity = '1';
-                    });
-                    el.addEventListener('mousemove', (ev) => {
-                        tooltip.style.left = ev.clientX + 20 + 'px';
-                        tooltip.style.top = ev.clientY + 20 + 'px';
-                    });
-                    el.addEventListener('mouseleave', () => {
-                        tooltip.style.opacity = '0';
-                    });
-                }
-            });
+                // Внутри цикла по районам Кемеровской области:
+                el.addEventListener('click', (ev) => {
+                    console.log("Нажат район:", el.getAttribute('inkscape:label')); // Добавь это
+                    ev.stopPropagation();
+                    
+                    // Получаем ID района. 
+                    // ВАЖНО: в БД в таблице Districts колонку DistrictName заполни так же, 
+                    // как называется район в inkscape:label (например, "Мариинский район")
+                    const districtName = el.getAttribute('inkscape:label');
+
+                    // 1. Прячем карту области в стиле Netflix
+                    regionalContainer.style.opacity = '0';
+                    setTimeout(() => { regionalContainer.style.display = 'none'; }, 800);
+
+                    // 2. Запрос к твоему серверу (создадим новый метод в контроллере для поиска по имени)
+                    fetch(`/api/map/centers-by-district?name=${encodeURIComponent(districtName)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            renderCenters(data);
+                        });
+                });});
             }
 
             setTimeout(() => {
@@ -370,7 +377,26 @@ backBtn.addEventListener('click', () => {
         }
     }, 1000);
 });
+function renderCenters(data) {
+    const view = document.getElementById('centers-view');
+    const list = document.getElementById('centers-list');
+    
+    list.innerHTML = ''; // Очистка
+    data.forEach(c => {
+        list.innerHTML += `
+            <div class="center-card" style="color:white; background: rgba(0,0,0,0.5); padding: 20px; margin: 10px;">
+                <img src="${c.imageUrl}" style="width:200px">
+                <h2>${c.name}</h2>
+                <p>${c.description}</p>
+                <p>Адрес: ${c.address}</p>
+                <p>Контакты: ${c.contacts}</p>
+            </div>
+        `;
+    });
 
+    view.style.display = 'block';
+    setTimeout(() => { view.style.opacity = '1'; }, 100);
+}
 </script>
 </body>
 </html>

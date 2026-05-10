@@ -16,29 +16,24 @@ namespace VolunteerMap.Controllers
         }
 
         // Метод, который вернет центры для конкретного региона
-        [HttpGet("centers/{regionId}")]
-        public async Task<IActionResult> GetCenters(int regionId)
+        [HttpGet("centers-by-district")]
+        public async Task<IActionResult> GetByDistrictName([FromQuery] string name)
         {
-            // Сначала получаем список ID районов, принадлежащих региону
-            var districtIds = await _context.Districts
-                .Where(d => d.ParentRegionId == regionId)
-                .Select(d => d.DistrictId)
-                .ToListAsync();
+            // Убираем лишние пробелы на случай, если они есть в БД или SVG
+            var cleanName = name?.Trim();
 
-            if (!districtIds.Any())
-            {
-                return NotFound("Районы для этого региона не найдены.");
-            }
-
-            // Теперь получаем центры, которые входят в эти районы
             var centers = await _context.VolunteerCenters
-                .Where(c => districtIds.Contains(c.DistrictId))
-                .Select(c => new {
-                    c.Name,
-                    c.Description,
-                    c.Address,
-                    c.Contacts,
-                    c.ImageUrl
+                .Join(_context.Districts,
+                      c => c.DistrictId,
+                      d => d.DistrictId,
+                      (c, d) => new { c, d })
+                .Where(x => x.d.DistrictName == cleanName)
+                .Select(x => new {
+                    x.c.Name,
+                    x.c.Description,
+                    x.c.Address,
+                    x.c.Contacts,
+                    x.c.ImageUrl
                 })
                 .ToListAsync();
 

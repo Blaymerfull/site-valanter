@@ -5,7 +5,7 @@ namespace VolunteerMap.Models
     public class Region
     {
         [Key] // Помечаем, что это первичный ключ
-        public int RegionId { get; set; }
+        public string RegionId { get; set; }
         public string FullName { get; set; }
     }
 }
