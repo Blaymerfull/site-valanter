@@ -19,7 +19,6 @@
 #map-wrapper {
     width: 90vw;
     height: 80vh;
-    /* Убрал отсюда transition: transform, чтобы он не конфликтовал с JS */
     transition: opacity 0.8s ease; 
 }
 
@@ -27,20 +26,16 @@ svg {
     width: 100%; 
     height: 100%; 
     pointer-events: all; 
-    /* ВАЖНО: точка отсчета для математики зума */
     transform-origin: 0 0 !important; 
-    /* Плавность движения всей карты */
     transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Обычный стиль регионов */
 path {
     fill: #0a0a0a !important;
     stroke: #333 !important;
     stroke-width: 0.5;
     transition: fill 0.3s, stroke 0.3s, opacity 0.8s ease;
     cursor: pointer;
-    /* ВАЖНО: чтобы границы оставались тонкими при зуме */
     vector-effect: non-scaling-stroke; 
 }
 
@@ -49,16 +44,14 @@ path:hover {
     stroke: #fff !important;
 }
 
-/* Стиль для изолированного региона в центре */
 .focused-region {
     fill: #151515 !important;
     stroke: #fff !important;
-    stroke-width: 1.5; /* Здесь можно чуть больше для акцента */
+    stroke-width: 1.5;
     filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.5));
     pointer-events: none;
 }
 
-/* Уголки-сканеры */
 .scanner-corner {
     position: fixed;
     width: 40px; height: 40px;
@@ -74,7 +67,6 @@ path:hover {
 
 .scanning .scanner-corner { 
     opacity: 1; 
-    /* Добавим эффект пульсации как в Netflix Dark */
     animation: cornerPulse 2s infinite alternate ease-in-out;
 }
 
@@ -83,7 +75,6 @@ path:hover {
     to { transform: scale(1.1); opacity: 1; }
 }
 
-/* Тултип */
 #tooltip {
     position: fixed;
     pointer-events: none;
@@ -102,7 +93,7 @@ path:hover {
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    background: #000; /* Добавил фон, чтобы кнопки было видно */
+    background: #000;
     border: 1px solid #fff;
     color: #fff;
     padding: 12px 30px;
@@ -110,11 +101,12 @@ path:hover {
     opacity: 0;
     visibility: hidden;
     transition: 0.5s;
-    z-index: 200;
+    z-index: 1000 !important;
     letter-spacing: 4px;
 }
 #back-button.visible { opacity: 1; visibility: visible; }
 #back-button:hover { background: #fff; color: #000; }
+
 #region-title-display {
     position: fixed;
     top: 50%;
@@ -136,67 +128,15 @@ path:hover {
 #region-title-display.visible {
     opacity: 1;
     filter: blur(0);
-    letter-spacing: 25px; /* Текст как бы расширяется */
+    letter-spacing: 25px;
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
 }
 
-/* Скрытие карты */
 .map-hidden {
     opacity: 0 !important;
-    transform: scale(1.2); /* Эффект пролета сквозь карту */
+    transform: scale(1.2);
     transition: opacity 1s ease, transform 1.5s ease-in !important;
-}
-
-/* Стили сканера (уже были, но убедись, что анимация есть) */
-.scanning .scanner-corner {
-    opacity: 1;
-    animation: cornerMoving 3s infinite alternate;
-}
-
-@keyframes cornerMoving {
-    from { transform: scale(1); border-color: #444; }
-    to { transform: scale(1.05); border-color: #fff; }
-}
-.map-hidden {
-    opacity: 0 !important;
-    transform: scale(1.2); 
-    transition: opacity 1s ease, transform 1.5s ease-in !important;
-    /* ВАЖНО: карта перестает реагировать на мышь, когда она скрыта */
     pointer-events: none !important; 
-}
-
-/* Блокировщик кликов */
-#click-blocker {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 400; /* Средний слой */
-    display: none;
-    background: transparent;
-}
-
-/* Кнопка "Назад" - поднимаем её выше блокировщика */
-#back-button {
-    z-index: 1000 !important; /* Самый высокий слой */
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    /* ... остальные твои стили ... */
-}
-
-/* Текст названия региона - тоже выше */
-#region-title-display {
-    z-index: 500; /* Выше блокировщика (400) */
-    position: fixed;
-    /* ... остальные твои стили ... */
-}
-
-/* Уголки сканера - можно оставить на фоне или тоже поднять */
-.scanner-corner {
-    z-index: 450; 
 }
 
 #regional-map-container path {
@@ -207,7 +147,6 @@ path:hover {
     vector-effect: non-scaling-stroke;
 }
 
-/* 2. Подсветка района при наведении */
 #regional-map-container path:hover {
     fill: #383838 !important;
     stroke: #ffffff !important;
@@ -216,25 +155,187 @@ path:hover {
     cursor: pointer;
 }
 
-/* 3. ОСОБЫЙ СТИЛЬ ДЛЯ BORDER (Границы области) */
-/* В твоем Gist у границы есть label="Border" */
 #regional-map-container [inkscape\:label="Border"],
 #regional-map-container [id="path5"] {
     fill: none !important;
-    stroke: #444444 !important; /* Тёмно-серый цвет */
+    stroke: #444444 !important;
     stroke-width: 1.5px !important;
-    pointer-events: none !important; /* Мышь её не видит */
+    pointer-events: none !important;
     filter: none !important;
 }
 
-/* 4. Убираем белый фон, если он есть */
 #regional-map-container svg {
     background: transparent !important;
 }
 
+.centers-hidden {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
 
+.centers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
 
+.center-card {
+    background: #1a1a1a; 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    will-change: transform, opacity;
+    border-radius: 12px;
+    padding: 25px;
+    color: white;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
 
+.center-card:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fade-out {
+    opacity: 0 !important;
+    pointer-events: none;
+}
+
+#regional-map-container, #map-wrapper {
+    pointer-events: auto !important;
+}
+
+#regional-map-container svg path, #map-wrapper svg path {
+    pointer-events: auto !important;
+    cursor: pointer;
+}
+
+.hidden-completely {
+    display: none !important;
+}
+
+#centers-view {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.centers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    padding: 60px 10%;
+}
+
+.center-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 25px;
+    color: white;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+}
+
+.center-card.animate {
+    animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes reveal {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.center-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #e50914;
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
+.center-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.card-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+    opacity: 0.8;
+}
+
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.modal-content {
+    background: #141414;
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    max-height: 85vh;
+    border-radius: 15px;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 50px rgba(0,0,0,1);
+    animation: modalSlideUp 0.5s ease;
+    padding-bottom: 100px;
+}
+
+.close-modal {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #e50914;
+    font-size: 50px;
+    line-height: 0;
+    padding-bottom: 8px;
+    cursor: pointer;
+    z-index: 1000001;
+    transition: transform 0.3s ease;
+}
+
+.close-modal:hover {
+    transform: translateX(-50%) scale(1.2);
+    color: white;
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
     </style>
 </head>
 <body>
@@ -248,29 +349,29 @@ path:hover {
     <button id="back-button">НАЗАД К КАРТЕ</button>
     <div id="map-wrapper"></div>
     <div id="region-title-display"></div>
-    <div id="click-blocker"></div>
     <div id="regional-map-container" style="position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:70vw; height:70vh; display:none; opacity:0; transition: opacity 1s; z-index: 501;"></div>
-    <!-- Контейнер для волонтерских центров (изначально скрыт) -->
-    <div id="centers-view" style="display:none; opacity:0; transition: opacity 0.8s;">
-    <div id="centers-list"></div>
-</div>
-
+    <div id="centers-view" class="centers-hidden">
+        <div id="centers-list" class="centers-grid"></div>
+    </div>
+    <div id="modal-overlay" style="display:none;">
+        <span id="close-modal" class="close-modal">&times;</span>
+        <div class="modal-content" id="modal-body"></div>
+    </div>
 
 <script>
    const wrapper = document.getElementById('map-wrapper');
 const tooltip = document.getElementById('tooltip');
 const backBtn = document.getElementById('back-button');
 const titleDisplay = document.getElementById('region-title-display');
-// Добавим переменную для контейнера региона (убедись, что такой ID есть в HTML)
 const regionalContainer = document.getElementById('regional-map-container'); 
 
-fetch('Blank_map_of_Russia-gray.svg')
+fetch('Blank_map_of_Russia-gray.svg')   
     .then(res => res.text())
     .then(data => {
         wrapper.innerHTML = data;
         const svg = wrapper.querySelector('svg');
         const paths = svg.querySelectorAll('path');
-
+    
         paths.forEach(path => {
             if (path.id.toLowerCase().includes('border')) {
                 path.style.pointerEvents = 'none';
@@ -293,110 +394,223 @@ fetch('Blank_map_of_Russia-gray.svg')
             path.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
 
             path.addEventListener('click', (e) => {
-    if (document.body.classList.contains('scanning')) return;
-    e.stopPropagation();
+                // 1. Плавно гасим карту России
+                wrapper.style.transition = 'opacity 0.6s ease';
+                wrapper.style.opacity = '0';
+                wrapper.style.pointerEvents = 'none';
 
-    wrapper.classList.add('map-hidden');
-    tooltip.style.opacity = '0';
-    tooltip.style.visibility = 'hidden';
-    document.body.classList.add('scanning');
+                // 2. ФИЗИЧЕСКИ убираем её через 600мс, чтобы нельзя было кликнуть
+                setTimeout(() => {
+                    if (wrapper.style.opacity === '0') {
+                        wrapper.style.display = 'none';
+                    }
+                }, 600);
+                tooltip.style.opacity = '0';
+                tooltip.style.visibility = 'hidden';
+                document.body.classList.add('scanning');
+                
+                if (rawId === 'RU-KEM' || name.includes('Кемеровская')) {
+                    fetch('Outline_Map_of_Kemerovo_Oblast.svg')
+                        .then(r => r.text())
+                        .then(svgKEM => {
+                            regionalContainer.innerHTML = svgKEM;
+                            regionalContainer.style.display = 'block';
 
-    if (rawId === 'RU-KEM' || name.includes('Кемеровская')) {
-        // Внутри обработки клика на Кемеровскую область:
-fetch('Outline_Map_of_Kemerovo_Oblast.svg')
-    .then(r => r.text())
-    .then(svgKEM => {
-        regionalContainer.innerHTML = svgKEM;
-        regionalContainer.style.display = 'block';
-        
-        const kemSvg = regionalContainer.querySelector('svg');
-        if(kemSvg) {
-            kemSvg.style.width = "100%";
-            kemSvg.style.height = "100%";
+                            document.body.classList.remove('scanning');
 
-            const allPaths = kemSvg.querySelectorAll('path');
-            allPaths.forEach(el => {
-                // Внутри цикла по районам Кемеровской области:
-                el.addEventListener('click', (ev) => {
-                    console.log("Нажат район:", el.getAttribute('inkscape:label')); // Добавь это
-                    ev.stopPropagation();
-                    
-                    // Получаем ID района. 
-                    // ВАЖНО: в БД в таблице Districts колонку DistrictName заполни так же, 
-                    // как называется район в inkscape:label (например, "Мариинский район")
-                    const districtName = el.getAttribute('inkscape:label');
+                            const kemSvg = regionalContainer.querySelector('svg');
+                            if (kemSvg) {
+                                kemSvg.style.pointerEvents = 'all';
+                                
+                                const allPaths = kemSvg.querySelectorAll('path');
+                                allPaths.forEach(el => {
+                                    const label = el.getAttribute('inkscape:label') || "";
 
-                    // 1. Прячем карту области в стиле Netflix
-                    regionalContainer.style.opacity = '0';
-                    setTimeout(() => { regionalContainer.style.display = 'none'; }, 800);
+                                    if (label !== "Border") {
+                                        el.style.cursor = 'pointer';
+                                        
+                                        el.onmouseenter = () => {
+                                            tooltip.innerText = label;
+                                            tooltip.style.opacity = '1';
+                                            tooltip.style.visibility = 'visible';
+                                        };
+                                       
+                                        el.onmousemove = (ev) => {
+                                            tooltip.style.left = ev.clientX + 20 + 'px';
+                                            tooltip.style.top = ev.clientY + 20 + 'px';
+                                        };
 
-                    // 2. Запрос к твоему серверу (создадим новый метод в контроллере для поиска по имени)
-                    fetch(`/api/map/centers-by-district?name=${encodeURIComponent(districtName)}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            renderCenters(data);
+                                        el.onmouseleave = () => {
+                                            tooltip.style.opacity = '0';
+                                            tooltip.style.visibility = 'hidden';
+                                        };
+
+                                        el.onclick = (ev) => {
+                                            ev.stopPropagation();
+                                            regionalContainer.classList.add('fade-out');
+                                            //backBtn.classList.remove('visible');
+
+                                            fetch(`/api/map/centers-by-district?name=${encodeURIComponent(label)}`)
+                                                .then(res => res.json())
+                                                .then(data => {
+                                                    setTimeout(() => {
+                                                        regionalContainer.style.display = 'none';
+                                                        regionalContainer.classList.remove('fade-out');
+                                                        renderCenters(data); 
+                                                    }, 600);
+                                                });
+                                        };
+                                    }
+                                });
+                            }
+
+                            setTimeout(() => {
+                                regionalContainer.style.opacity = '1';
+                                backBtn.classList.add('visible');
+                            }, 800);
                         });
-                });});
-            }
-
-            setTimeout(() => {
-                regionalContainer.style.opacity = '1';
-                backBtn.classList.add('visible');
-            }, 800);
+                } else {
+                    titleDisplay.innerText = name;
+                    setTimeout(() => {
+                        titleDisplay.classList.add('visible');
+                        backBtn.classList.add('visible');
+                    }, 100);
+                }
+            });
         });
-    } else {
-        // Обычный текст для других регионов
-        titleDisplay.innerText = name;
-        setTimeout(() => {
-            titleDisplay.classList.add('visible');
-            backBtn.classList.add('visible');
-        }, 800);
+    }); // <-- ИСПРАВЛЕНО: закрытие .then(data => { ... })
+
+backBtn.addEventListener('click', () => {
+    const centersView = document.getElementById('centers-view');
+
+    if (centersView && centersView.style.display === 'block') {
+        centersView.style.display = 'none';
+        centersView.style.opacity = '0';
+        regionalContainer.style.display = 'block';
+        setTimeout(() => regionalContainer.style.opacity = '1', 50);
+        return; 
+    }
+
+    if (regionalContainer && regionalContainer.style.display === 'block') {
+        closeEverythingAndShowRussia();
+        return;
+    }
+
+    if (titleDisplay && titleDisplay.classList.contains('visible')) {
+        closeEverythingAndShowRussia();
+        return;
     }
 });
 
-        });
-    });
-
-backBtn.addEventListener('click', () => {   
-    wrapper.classList.remove('map-hidden');
-    document.body.classList.remove('scanning');
-    titleDisplay.classList.remove('visible');
-    backBtn.classList.remove('visible');
-    
-    // Скрываем карту области
-    if(regionalContainer) {
+    function closeEverythingAndShowRussia() {
+        // 1. Сначала плавно гасим все текущие активные элементы
         regionalContainer.style.opacity = '0';
-    }
+        regionalContainer.style.pointerEvents = 'none'; // Отключаем клики по области
+        titleDisplay.classList.remove('visible');
+        backBtn.classList.remove('visible');
 
-    setTimeout(() => {
-        tooltip.style.visibility = 'visible';
-        titleDisplay.innerText = '';
-        if(regionalContainer) {
+        setTimeout(() => {
+            // 2. Полностью убираем контейнеры из видимости
             regionalContainer.style.display = 'none';
             regionalContainer.innerHTML = '';
-        }
-    }, 1000);
-});
-function renderCenters(data) {
-    const view = document.getElementById('centers-view');
-    const list = document.getElementById('centers-list');
-    
-    list.innerHTML = ''; // Очистка
-    data.forEach(c => {
-        list.innerHTML += `
-            <div class="center-card" style="color:white; background: rgba(0,0,0,0.5); padding: 20px; margin: 10px;">
-                <img src="${c.imageUrl}" style="width:200px">
-                <h2>${c.name}</h2>
-                <p>${c.description}</p>
-                <p>Адрес: ${c.address}</p>
-                <p>Контакты: ${c.contacts}</p>
-            </div>
-        `;
-    });
+            titleDisplay.innerText = '';
 
-    view.style.display = 'block';
-    setTimeout(() => { view.style.opacity = '1'; }, 100);
+            // 3. Возвращаем карту России
+            wrapper.style.display = 'block'; // Сначала возвращаем физически
+
+            // Даем браузеру 50мс, чтобы он "заметил" появление блока, и включаем анимацию
+            setTimeout(() => {
+                wrapper.style.opacity = '1';
+                wrapper.style.pointerEvents = 'auto'; // ВКЛЮЧАЕМ КЛИКИ ПО РОССИИ
+                wrapper.classList.remove('map-hidden');
+                document.body.classList.remove('scanning');
+                tooltip.style.visibility = 'visible';
+            }, 50);
+
+        }, 500); // Это время должно совпадать с transition в CSS (0.5s)
+    }
+
+function renderCenters(data) {
+    const list = document.getElementById('centers-list');
+    const centersView = document.getElementById('centers-view');
+    centersView.style.display = 'block';
+    centersView.style.opacity = '1';
+    list.innerHTML = '';
+    wrapper.classList.add('map-hidden');
+    data.forEach((c, index) => {
+        const card = document.createElement('div');
+        card.className = 'center-card';
+        card.innerHTML = `
+            ${c.imageUrl ? `<img src="${c.imageUrl}" onerror="this.style.display='none'">` : '<div class="no-photo">Нет фото</div>'}
+            <h2>${c.name}</h2>
+            <div class="card-description">${c.description || ''}</div>
+            <button class="more-btn" style="background:#e50914; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Подробнее</button>
+        `;
+        card.onclick = () => openFullView(c);
+        list.appendChild(card);
+        setTimeout(() => card.classList.add('animate'), index * 100);
+    });
 }
+
+function openFullView(center) {
+    console.log("Открываем карточку:", center.name);
+    
+    const modal = document.getElementById('modal-overlay');
+    const body = document.getElementById('modal-body');
+    const closeBtn = document.getElementById('close-modal');
+    const backBtnElem = document.getElementById('back-button');
+
+    if (backBtnElem) {
+        backBtnElem.style.opacity = '0'; 
+        backBtnElem.style.pointerEvents = 'none';
+    }
+    
+    if (closeBtn) {
+        closeBtn.style.display = 'flex';
+        setTimeout(() => closeBtn.style.opacity = '1', 10);
+    }
+
+    body.innerHTML = `
+        ${center.imageUrl ? `<img src="${center.imageUrl}" style="width:100%; height:400px; object-fit:cover; border-radius: 15px 15px 0 0;" onerror="this.style.display='none'">` : ''}
+        <div style="padding: 40px;">
+            <h1 style="color:#e50914; margin-top:0;">${center.name}</h1>
+            <p style="font-size:1.1em; line-height:1.6; color: #fff;">${center.description || 'Описание отсутствует'}</p>
+            <div style="margin-top:30px; padding-top:20px; border-top:1px solid #333;">
+                <p>📍 ${center.address || 'Адрес не указан'}</p>
+                <p>📞 ${center.contacts || 'Контакты не указаны'}</p>
+            </div>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; 
+    
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 10);
+} // <-- Закрытие функции openFullView (ИСПРАВЛЕНО)
+
+// Функция закрытия модалки
+document.getElementById('close-modal').onclick = function() {
+    const modal = document.getElementById('modal-overlay');
+    const closeBtn = document.getElementById('close-modal');
+    const backBtnElem = document.getElementById('back-button'); // Используем то же имя, что и выше
+
+    modal.style.opacity = '0';
+    closeBtn.style.display = 'none';
+
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Возвращаем скролл
+        
+        if (backBtnElem) {
+            backBtnElem.style.opacity = '1';       // Возвращаем видимость
+            backBtnElem.style.pointerEvents = 'auto'; // Возвращаем кликабельность
+            backBtnElem.style.display = 'block';   // На всякий случай принудительно показываем
+        }
+    }, 400);
+};
+
 </script>
 </body>
 </html>
