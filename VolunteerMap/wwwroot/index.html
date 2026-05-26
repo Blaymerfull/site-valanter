@@ -15,6 +15,167 @@
     justify-content: center;
     align-items: center;
 }
+/* Контейнер для кнопок управления */
+.auth-panel {
+    position: fixed; /* Именно fixed, чтобы не улетала при скролле */
+    top: 30px;
+    left: 0;
+    width: 100%;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 600;
+    pointer-events: none;
+    box-sizing: border-box; /* Чтобы паддинги не расширяли экран */
+}
+
+.left-controls, .right-controls {
+    display: flex;
+    align-items: center;
+    pointer-events: auto; /* Возвращаем кликабельность самим кнопкам */
+}
+
+/* Общий стиль для верхних кнопок */
+.nav-btn {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.nav-btn:hover {
+    background: #e50914; /* Фирменный красный Netflix */
+    border-color: #e50914;
+}
+
+.nav-btn:last-child {
+    margin-right: 0;
+}
+
+/* Общие стили для новых оверлеев */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Контентные блоки */
+.custom-modal-content {
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 8px;
+    position: relative;
+    width: 100%;
+    color: white;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.auth-box { max-width: 400px; }
+.form-box { max-width: 600px; }
+
+.modal-title {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+/* Элементы форм */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input, 
+.input-group textarea, 
+.input-group select {
+    width: 100%;
+    padding: 14px;
+    background: #333;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.input-group input:focus, 
+.input-group textarea:focus, 
+.input-group select:focus {
+    background: #454545;
+    outline: 1px solid #e50914;
+}
+
+.input-group select option {
+    background: #141414;
+    color: white;
+}
+
+/* Кнопки действий */
+.action-btn {
+    width: 100%;
+    padding: 14px;
+    background: #e50914;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action-btn:hover {
+    background: #b20710;
+}
+
+/* Текст переключения */
+.switch-form-text {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #aaa;
+    text-align: center;
+}
+
+.switch-form-text span {
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.switch-form-text span:hover {
+    color: #e50914;
+}
+
+/* Кнопка закрытия модалки */
+.custom-close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.custom-close-modal:hover {
+    color: white;
+}
+
 
 #map-wrapper {
     width: 90vw;
@@ -145,6 +306,7 @@ path:hover {
     stroke-width: 0.5px !important;
     transition: all 0.4s ease;
     vector-effect: non-scaling-stroke;
+    z-index: 501;
 }
 
 #regional-map-container path:hover {
@@ -340,6 +502,93 @@ path:hover {
 </head>
 <body>
 
+    <div class="auth-panel">
+        <!-- Левый верхний угол (Доступно после входа) -->
+        <div class="left-controls">
+            <button id="add-center-btn" class="nav-btn" style="display: none;">Добавить волонтерский центр</button>
+            <button id="view-apps-btn" class="nav-btn" style="display: none;">Посмотреть заявки</button>
+        </div>
+
+        <!-- Правый верхний угол -->
+        <div class="right-controls">
+            <button id="account-btn" class="nav-btn">Личный кабинет</button>
+            <span id="user-email-display" style="color: white; margin-right: 15px; display: none;"></span>
+            <button id="logout-btn" class="nav-btn" style="display: none;">Выйти</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации (Вход / Регистрация) -->
+<div id="auth-modal" class="custom-modal-overlay">
+    <div class="custom-modal-content auth-box">
+        <span class="custom-close-modal" id="close-auth-btn">&times;</span>
+        
+        <!-- Форма Входа -->
+        <div id="login-form-block">
+            <h2 class="modal-title">Вход</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="action-btn">Войти</button>
+            </form>
+            <p class="switch-form-text">Впервые на сайте? <span id="to-register-btn">Зарегистрироваться</span></p>
+        </div>
+
+        <!-- Форма Регистрации -->
+        <div id="register-form-block" style="display: none;">
+            <h2 class="modal-title">Регистрация</h2>
+            <form id="register-form">
+                <div class="input-group">
+                    <input type="email" id="register-email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-password" placeholder="Пароль" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-confirm-password" placeholder="Повторите пароль" required>
+                </div>
+                <button type="submit" class="action-btn">Создать аккаунт</button>
+            </form>
+            <p class="switch-form-text">Уже есть аккаунт? <span id="to-login-btn">Войти</span></p>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно подачи заявки (Форма добавления центра) -->
+<div id="add-center-modal" class="custom-modal-overlay">
+    <div class="custom-modal-content form-box">
+        <span class="custom-close-modal" id="close-add-modal-btn">&times;</span>
+        <h2 class="modal-title">Подать заявку на создание центра</h2>
+        <form id="center-application-form">
+            <div class="input-group">
+                <input type="text" id="app-name" placeholder="Название волонтерского центра" required>
+            </div>
+            <div class="input-group">
+                <textarea id="app-description" placeholder="Описание деятельности центра" rows="4" required></textarea>
+            </div>
+            <div class="input-group">
+                <input type="text" id="app-address" placeholder="Фактический адрес (Город, улица, дом)" required>
+            </div>
+            <div class="input-group">
+                <input type="text" id="app-contacts" placeholder="Контакты (Телефон, Email, Ссылка на ВК)" required>
+            </div>
+            <div class="input-group">
+                <input type="url" id="app-image" placeholder="Ссылка на изображение/логотип (URL)">
+            </div>
+            <div class="input-group">
+                <select id="app-district" required>
+                    <option value="" disabled selected>Выберите район расположения</option>
+                    <!-- Районы подгрузим динамически из твоей таблицы БД Districts через JS -->
+                </select>
+            </div>
+            <button type="submit" class="action-btn">Отправить на модерацию</button>
+        </form>
+    </div>
+</div>
+
     <div id="tl" class="scanner-corner"></div>
     <div id="tr" class="scanner-corner"></div>
     <div id="bl" class="scanner-corner"></div>
@@ -364,6 +613,62 @@ const tooltip = document.getElementById('tooltip');
 const backBtn = document.getElementById('back-button');
 const titleDisplay = document.getElementById('region-title-display');
 const regionalContainer = document.getElementById('regional-map-container'); 
+
+
+// Элементы управления авторизацией и заявками
+const accountBtn = document.getElementById('account-btn');
+const authModal = document.getElementById('auth-modal');
+const closeAuthBtn = document.getElementById('close-auth-btn');
+
+const addCenterBtn = document.getElementById('add-center-btn');
+const addCenterModal = document.getElementById('add-center-modal');
+const closeAddModalBtn = document.getElementById('close-add-modal-btn');
+
+const logoutBtn = document.getElementById('logout-btn');
+const userEmailDisplay = document.getElementById('user-email-display');
+
+// Переключение Вход/Регистрация
+const toRegisterBtn = document.getElementById('to-register-btn');
+const toLoginBtn = document.getElementById('to-login-btn');
+const loginBlock = document.getElementById('login-form-block');
+const registerBlock = document.getElementById('register-form-block');
+
+// ==========================================
+// 2. ЛОГИКА ДЛЯ МОДАЛЬНЫХ ОКЕН (АВТОРИЗАЦИЯ)
+// ==========================================
+function showCustomModal(modal) {
+    modal.style.display = 'flex';
+    setTimeout(() => modal.style.opacity = '1', 10);
+}
+
+function hideCustomModal(modal) {
+    modal.style.opacity = '0';
+    setTimeout(() => modal.style.display = 'none', 400);
+}
+
+// Принудительно показываем кнопку "Личный кабинет" при загрузке
+if (accountBtn) accountBtn.style.display = 'block';
+
+accountBtn.addEventListener('click', () => showCustomModal(authModal));
+closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
+
+addCenterBtn.addEventListener('click', () => {
+    showCustomModal(addCenterModal);
+    loadDistrictsToForm(); 
+});
+closeAddModalBtn.addEventListener('click', () => hideCustomModal(addCenterModal));
+
+toRegisterBtn.addEventListener('click', () => {
+    loginBlock.style.display = 'none';
+    registerBlock.style.display = 'block';
+});
+
+toLoginBtn.addEventListener('click', () => {
+    registerBlock.style.display = 'none';
+    loginBlock.style.display = 'block';
+});
+
+
 
 fetch('Blank_map_of_Russia-gray.svg')   
     .then(res => res.text())
@@ -610,7 +915,6 @@ document.getElementById('close-modal').onclick = function() {
         }
     }, 400);
 };
-
 </script>
 </body>
 </html>

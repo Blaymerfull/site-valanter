@@ -1,6 +1,7 @@
 wwwroot\Blank_map_of_Russia-gray.svg
 wwwroot\css\site.css
 wwwroot\favicon.ico
+wwwroot\index.html
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -65,11 +66,8 @@ wwwroot\lib\jquery\LICENSE.txt
 wwwroot\Outline_Map_of_Kemerovo_Oblast.svg
 wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
 wwwroot\README.md
-wwwroot\index.html
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\css\site.css
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\favicon.ico
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\js\site.js
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\index.html
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -130,6 +128,8 @@ C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\jquer
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\jquery\LICENSE.txt
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast.svg
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\js\site.js
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\favicon.ico
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\README.md
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\index.html
