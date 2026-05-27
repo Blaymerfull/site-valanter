@@ -46,5 +46,31 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.MapController",
+    "Method": "GetDistrictsByRegion",
+    "RelativePath": "api/Map/districts/{regionCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "regionCode",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.MapController",
+    "Method": "GetRegions",
+    "RelativePath": "api/Map/regions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   }
 ]

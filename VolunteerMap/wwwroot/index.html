@@ -578,10 +578,17 @@ path:hover {
             <div class="input-group">
                 <input type="url" id="app-image" placeholder="Ссылка на изображение/логотип (URL)">
             </div>
+                <div class="input-group">
+                <select id="app-region" required>
+                    <option value="" disabled selected>Выберите регион / область</option>
+                    <!-- Сюда JS подгрузит все регионы из таблицы Regions -->
+                </select>
+            </div>
+
             <div class="input-group">
-                <select id="app-district" required>
-                    <option value="" disabled selected>Выберите район расположения</option>
-                    <!-- Районы подгрузим динамически из твоей таблицы БД Districts через JS -->
+                <select id="app-district" required disabled>
+                    <option value="" disabled selected>Сначала выберите регион</option>
+                    <!-- Сюда JS подгрузит районы выбранного региона -->
                 </select>
             </div>
             <button type="submit" class="action-btn">Отправить на модерацию</button>
@@ -640,6 +647,67 @@ const registerBlock = document.getElementById('register-form-block');
 // ==========================================
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
+
+const appRegionSelect = document.getElementById('app-region');
+const appDistrictSelect = document.getElementById('app-district');
+
+// 1. Функция загрузки ВСЕХ регионов при открытии модального окна
+function loadRegionsToForm() {
+    if (!appRegionSelect) return;
+    
+    // Если регионы уже загружены ранее, не шлем запрос повторно
+    if (appRegionSelect.children.length > 1) return;
+
+    fetch('/api/map/regions')
+        .then(res => res.json())
+        .then(regions => {
+            regions.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.regionId;   // В value пишем ID для бэкенда
+                opt.innerText = r.fullName; // Пользователь видит название
+                appRegionSelect.appendChild(opt);
+            });
+        })
+        .catch(err => console.error("Ошибка загрузки регионов:", err));
+}
+
+// 2. Обработчик выбора региона — подгружает соответствующие районы
+if (appRegionSelect) {
+    appRegionSelect.addEventListener('change', function() {
+        const selectedRegionId = this.value;
+
+        // Очищаем старые районы и блокируем список на время загрузки
+        appDistrictSelect.innerHTML = '<option value="" disabled selected>Загрузка районов...</option>';
+        appDistrictSelect.disabled = true;
+
+        // Запрашиваем районы выбранного региона
+        fetch(`/api/map/districts/${selectedRegionId}`)
+            .then(res => res.json())
+            .then(districts => {
+                appDistrictSelect.innerHTML = '<option value="" disabled selected>Выберите район расположения</option>';
+                
+                if (districts.length === 0) {
+                    appDistrictSelect.innerHTML = '<option value="" disabled selected>В этом регионе нет районов</option>';
+                    return;
+                }
+
+                districts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.districtId;      // ID района для будущей отправки в БД
+                    opt.innerText = d.districtName; // Название района
+                    appDistrictSelect.appendChild(opt);
+                });
+
+                appDistrictSelect.disabled = false; // Разблокируем список районов
+            })
+            .catch(err => {
+                console.error("Ошибка загрузки районов:", err);
+                appDistrictSelect.innerHTML = '<option value="" disabled selected>Ошибка загрузки</option>';
+            });
+    });
+}
+
+
 
 // Функция, которая настраивает кнопки на сайте в зависимости от того, вошел ли пользователь
 function checkUserAuth() {
@@ -768,14 +836,14 @@ function hideCustomModal(modal) {
 }
 
 // Принудительно показываем кнопку "Личный кабинет" при загрузке
-if (accountBtn) accountBtn.style.display = 'block';
+//if (accountBtn) accountBtn.style.display = 'block';
 
 accountBtn.addEventListener('click', () => showCustomModal(authModal));
 closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
 
 addCenterBtn.addEventListener('click', () => {
     showCustomModal(addCenterModal);
-    loadDistrictsToForm(); 
+    loadRegionsToForm(); // Вызываем загрузку регионов вместо старой функции
 });
 closeAddModalBtn.addEventListener('click', () => hideCustomModal(addCenterModal));
 

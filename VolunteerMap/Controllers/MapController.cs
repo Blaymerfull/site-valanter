@@ -39,5 +39,32 @@ namespace VolunteerMap.Controllers
 
             return Ok(centers);
         }
+
+        
+        [HttpGet("regions")]
+        public async Task<IActionResult> GetRegions()
+        {
+            var regions = await _context.Regions
+                .Select(r => new { r.RegionId, r.FullName })
+                .ToListAsync();
+            return Ok(regions);
+        }
+
+        // 2. Получить районы конкретного региона (GET: api/map/districts/{regionId})
+        [HttpGet("districts/{regionCode}")]
+        public async Task<IActionResult> GetDistrictsByRegion(string regionCode)
+        {
+            var cleanCode = regionCode?.Trim();
+
+            // Прямое сравнение строк, без методов .ToString(), чтобы EF Core отработал идеально
+            var districts = await _context.Districts
+                .Where(d => d.ParentRegionId == cleanCode)
+                .Select(d => new { d.DistrictId, d.DistrictName })
+                .ToListAsync();
+
+            return Ok(districts);
+        }
+
+
     }
 }
