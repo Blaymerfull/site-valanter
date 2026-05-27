@@ -633,6 +633,127 @@ const toLoginBtn = document.getElementById('to-login-btn');
 const loginBlock = document.getElementById('login-form-block');
 const registerBlock = document.getElementById('register-form-block');
 
+
+
+// ==========================================
+// ЛОГИКА ОТПРАВКИ ФОРМ АВТОРИЗАЦИИ И СЕССИИ
+// ==========================================
+const loginForm = document.getElementById('login-form');
+const registerForm = document.getElementById('register-form');
+
+// Функция, которая настраивает кнопки на сайте в зависимости от того, вошел ли пользователь
+function checkUserAuth() {
+    const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+    const viewAppsBtn = document.getElementById('view-apps-btn'); // Кнопка админа
+
+    if (currentUser) {
+        // Пользователь вошел в систему
+        if (accountBtn) accountBtn.style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'block';
+        if (userEmailDisplay) {
+            userEmailDisplay.innerText = currentUser.email;
+            userEmailDisplay.style.display = 'block';
+        }
+        if (addCenterBtn) addCenterBtn.style.display = 'block';
+
+        // Если вошел Администратор, показываем кнопку модерации заявок
+        if (currentUser.role === 'Admin' && viewAppsBtn) {
+            viewAppsBtn.style.display = 'block';
+        } else if (viewAppsBtn) {
+            viewAppsBtn.style.display = 'none';
+        }
+    } else {
+        // Пользователь НЕ вошел в систему
+        if (accountBtn) accountBtn.style.display = 'block';
+        if (logoutBtn) logoutBtn.style.display = 'none';
+        if (userEmailDisplay) {
+            userEmailDisplay.innerText = '';
+            userEmailDisplay.style.display = 'none';
+        }
+        if (addCenterBtn) addCenterBtn.style.display = 'none';
+        if (viewAppsBtn) viewAppsBtn.style.display = 'none';
+    }
+}
+
+// Запускаем проверку авторизации сразу при загрузке страницы
+checkUserAuth();
+
+// Обработка РЕГИСТРАЦИИ
+if (registerForm) {
+    registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            alert("Пароли не совпадают!");
+            return;
+        }
+
+        fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password })
+        })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Ошибка регистрации');
+            return data;
+        })
+        .then(data => {
+            alert(data.message);
+            // Переключаем на окно входа
+            if (toLoginBtn) toLoginBtn.click();
+        })
+        .catch(err => alert(err.message));
+    });
+}
+
+// Обработка ВХОДА
+if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password })
+        })
+        .then(async response => {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Неверный логин или пароль');
+            return data;
+        })
+        .then(data => {
+            alert(data.message);
+            // Сохраняем пользователя в локальное хранилище браузера
+            localStorage.setItem('volunteer_user', JSON.stringify({
+                email: data.email,
+                role: data.role,
+                userId: data.userId
+            }));
+            
+            hideCustomModal(authModal);
+            checkUserAuth(); // Обновляем кнопки на главной
+        })
+        .catch(err => alert(err.message));
+    });
+}
+
+// Обработка ВЫХОДА из аккаунта
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('volunteer_user');
+        checkUserAuth(); // Сбрасываем интерфейс
+        location.reload(); // Перезагружаем страницу для очистки состояний
+    });
+}
+
 // ==========================================
 // 2. ЛОГИКА ДЛЯ МОДАЛЬНЫХ ОКЕН (АВТОРИЗАЦИЯ)
 // ==========================================
