@@ -69,6 +69,7 @@ wwwroot\README.md
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\css\site.css
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\favicon.ico
+C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\index.html
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\js\site.js
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
@@ -132,4 +133,3 @@ C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\lib\jquer
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast.svg
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
 C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\README.md
-C:\Users\Blaym\Desktop\Диплом\site-valanter\VolunteerMap\wwwroot\index.html

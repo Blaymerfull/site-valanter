@@ -15,6 +15,98 @@
     justify-content: center;
     align-items: center;
 }
+
+
+
+/* Контейнер поиска по центру панели */
+.search-container {
+    position: relative;
+    pointer-events: auto; /* Разрешаем клики */
+    width: 450px;
+    margin: 0 20px;
+}
+
+.search-wrapper {
+    display: flex;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+}
+
+.search-wrapper:focus-within {
+    border-color: #e50914;
+}
+
+#search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px 15px;
+    color: white;
+    font-size: 0.95em;
+    outline: none;
+}
+
+#search-filter {
+    background: rgba(30, 30, 30, 0.9);
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ccc;
+    padding: 0 10px;
+    cursor: pointer;
+    outline: none;
+    font-size: 0.85em;
+}
+
+/* Выпадающее меню результатов */
+.search-results-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.search-result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+}
+
+.search-result-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.search-result-item h4 {
+    margin: 0 0 4px 0;
+    color: #e50914;
+    font-size: 0.95em;
+}
+
+.search-result-item p {
+    margin: 0;
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+
+
+
 /* Контейнер для кнопок управления */
 .auth-panel {
     position: fixed; /* Именно fixed, чтобы не улетала при скролле */
@@ -509,6 +601,23 @@ path:hover {
             <button id="view-apps-btn" class="nav-btn" style="display: none;">Посмотреть заявки</button>
         </div>
 
+
+        <!-- Окно поиска -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input type="text" id="search-input" placeholder="Поиск волонтерского центра...">
+                <select id="search-filter">
+                    <option value="all">Везде</option>
+                    <option value="region">По региону</option>
+                    <option value="district">По району</option>
+                    <option value="name">По названию</option>
+                </select>
+            </div>
+            <!-- Выпадающий список результатов поиска -->
+            <div id="search-results" class="search-results-dropdown"></div>
+        </div>        
+
+
         <!-- Правый верхний угол -->
         <div class="right-controls">
             <button id="account-btn" class="nav-btn">Личный кабинет</button>
@@ -649,6 +758,74 @@ const toRegisterBtn = document.getElementById('to-register-btn');
 const toLoginBtn = document.getElementById('to-login-btn');
 const loginBlock = document.getElementById('login-form-block');
 const registerBlock = document.getElementById('register-form-block');
+
+// ==========================================
+// 7. ЛОГИКА ИНТЕЛЛЕКТУАЛЬНОГО ПОИСКА ЦЕНТРОВ
+// ==========================================
+const searchInput = document.getElementById('search-input');
+const searchFilter = document.getElementById('search-filter');
+const searchResults = document.getElementById('search-results');
+
+let searchTimeout = null;
+
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        const query = this.value.trim();
+        const filter = searchFilter.value;
+
+        if (query.length < 2) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        // Задержка 300мс перед отправкой запроса на сервер (оптимизация)
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/map/search?query=${encodeURIComponent(query)}&filter=${filter}`)
+                .then(res => res.json())
+                .then(data => {
+                    searchResults.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        searchResults.innerHTML = '<div class="search-result-item"><p style="text-align:center;">Ничего не найдено</p></div>';
+                        searchResults.style.display = 'block';
+                        return;
+                    }
+
+                    data.forEach(center => {
+                        const item = document.createElement('div');
+                        item.className = 'search-result-item';
+                        item.innerHTML = `
+                            <h4>${center.name}</h4>
+                            <p>📍 ${center.locationInfo}</p>
+                        `;
+
+                        // Клик по результату поиска — открывает твою карточку openFullView
+                        item.addEventListener('click', () => {
+                            searchResults.style.display = 'none';
+                            searchInput.value = ''; // Очищаем строку поиска
+                            openFullView(center);   // Вызываем твою готовую модалку
+                        });
+
+                        searchResults.appendChild(item);
+                    });
+
+                    searchResults.style.display = 'block';
+                })
+                .catch(err => console.error("Ошибка поиска:", err));
+        }, 300);
+    });
+}
+
+// Закрываем выпадающий список поиска, если кликнули мимо него
+document.addEventListener('click', function(e) {
+    if (searchResults && !e.target.closest('.search-container')) {
+        searchResults.style.display = 'none';
+    }
+});
+
+
 
 
 
