@@ -471,17 +471,27 @@ path:hover {
 }
 
 #centers-view {
-    position: relative;
+     position: fixed; /* Фиксируем на весь экран поверх карты */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 10;
-    width: 100%;
-    min-height: 100vh;
+    
+    /* ВКЛЮЧАЕМ СВЕРХУ ПАДДИНГ, чтобы карточки не залезали под поиск */
+    padding-top: 140px; 
+    
+    /* РАЗРЕШАЕМ СКРОЛЛ только внутри этого контейнера */
+    overflow-y: auto; 
+    box-sizing: border-box;
+    background-color: #050505; /* Задаем фон, чтобы карта сзади не просвечивала */
 }
 
 .centers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 30px;
-    padding: 60px 10%;
+    padding: 20px 10% 100px 10%; /* Добавили отступ снизу */
 }
 
 .center-card {
