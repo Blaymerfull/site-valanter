@@ -596,6 +596,16 @@ path:hover {
     </div>
 </div>
 
+<div id="view-apps-modal" class="custom-modal-overlay">
+    <div class="custom-modal-content form-box" style="max-width: 800px;">
+        <span class="custom-close-modal" id="close-apps-modal-btn">&times;</span>
+        <h2 class="modal-title">Модерация заявок от пользователей</h2>
+        <div id="apps-list-container" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+            <!-- Сюда JS подставит список заявок на проверку -->
+        </div>
+    </div>
+</div>
+
     <div id="tl" class="scanner-corner"></div>
     <div id="tr" class="scanner-corner"></div>
     <div id="bl" class="scanner-corner"></div>
@@ -650,6 +660,116 @@ const registerForm = document.getElementById('register-form');
 
 const appRegionSelect = document.getElementById('app-region');
 const appDistrictSelect = document.getElementById('app-district');
+
+// ==========================================
+// 6. ОТПРАВКА ФОРМЫ И МОДЕРАЦИЯ ЗАЯВОК (API)
+// ==========================================
+const appForm = document.getElementById('center-application-form');
+const viewAppsBtn = document.getElementById('view-apps-btn');
+const viewAppsModal = document.getElementById('view-apps-modal');
+const closeAppsModalBtn = document.getElementById('close-apps-modal-btn');
+const appsListContainer = document.getElementById('apps-list-container');
+
+// Открытие и закрытие окна модерации для админа
+if (viewAppsBtn) {
+    viewAppsBtn.addEventListener('click', () => {
+        showCustomModal(viewAppsModal);
+        loadPendingApplications(); // Загружаем заявки из БД
+    });
+}
+if (closeAppsModalBtn) {
+    closeAppsModalBtn.addEventListener('click', () => hideCustomModal(viewAppsModal));
+}
+
+// А. Пользователь отправляет форму в БД
+if (appForm) {
+    appForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Достаем сохраненного пользователя из сессии
+        const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+        if (!currentUser) {
+            alert("Ошибка сессии. Перезайдите в аккаунт.");
+            return;
+        }
+
+        const appData = {
+            districtId: document.getElementById('app-district').value,
+            userId: currentUser.userId,
+            name: document.getElementById('app-name').value,
+            description: document.getElementById('app-description').value,
+            address: document.getElementById('app-address').value,
+            contacts: document.getElementById('app-contacts').value,
+            imageUrl: document.getElementById('app-image').value
+        };
+
+        fetch('/api/applications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(appData)
+        })
+        .then(async response => {
+            if (!response.ok) throw new Error('Не удалось отправить заявку.');
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message);
+            appForm.reset(); // Очищаем поля формы
+            hideCustomModal(document.getElementById('add-center-modal'));
+        })
+        .catch(err => alert(err.message));
+    });
+}
+
+// Б. Админ загружает список ожидающих заявок
+function loadPendingApplications() {
+    if (!appsListContainer) return;
+    appsListContainer.innerHTML = '<p style="color:#aaa;">Загрузка списка заявок...</p>';
+
+    fetch('/api/applications/pending')
+        .then(res => res.json())
+        .then(apps => {
+            appsListContainer.innerHTML = '';
+            
+            if (apps.length === 0) {
+                appsListContainer.innerHTML = '<p style="color:#aaa; text-align:center;">Новых заявок на модерацию нет.</p>';
+                return;
+            }
+
+            apps.forEach(app => {
+                const item = document.createElement('div');
+                item.style = "background:#222; border:1px solid #333; padding:20px; margin-bottom:15px; border-radius:6px;";
+                item.innerHTML = `
+                    <h3 style="color:#e50914; margin-top:0;">${app.name}</h3>
+                    <p style="font-size:0.9em; opacity:0.8;">${app.description || 'Без описания'}</p>
+                    <p style="font-size:0.85em;">📍 <b>Адрес:</b> ${app.address}</p>
+                    <p style="font-size:0.85em;">📞 <b>Контакты:</b> ${app.contacts}</p>
+                    ${app.imageUrl ? `<p style="font-size:0.85em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🖼️ <b>Ссылка на фото:</b> <a href="${app.imageUrl}" target="_blank" style="color:#aaa;">${app.imageUrl}</a></p>` : ''}
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <button onclick="moderateApp(${app.applicationId}, 'approve')" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Одобрить</button>
+                        <button onclick="moderateApp(${app.applicationId}, 'reject')" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Отклонить</button>
+                    </div>
+                `;
+                appsListContainer.appendChild(item);
+            });
+        })
+        .catch(err => console.error("Ошибка загрузки заявок:", err));
+}
+
+// В. Функция одобрения / отклонения
+window.moderateApp = function(id, action) {
+    if (!confirm(`Вы уверены, что хотите ${action === 'approve' ? 'одобрить' : 'отклонить'} эту заявку?`)) return;
+
+    fetch(`/api/applications/${action}/${id}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            loadPendingApplications(); // Перезагружаем список
+        })
+        .catch(err => alert("Ошибка при обработке действия."));
+};
+
+
 
 // 1. Функция загрузки ВСЕХ регионов при открытии модального окна
 function loadRegionsToForm() {
@@ -835,9 +955,6 @@ function hideCustomModal(modal) {
     setTimeout(() => modal.style.display = 'none', 400);
 }
 
-// Принудительно показываем кнопку "Личный кабинет" при загрузке
-//if (accountBtn) accountBtn.style.display = 'block';
-
 accountBtn.addEventListener('click', () => showCustomModal(authModal));
 closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
 
@@ -972,7 +1089,7 @@ fetch('Blank_map_of_Russia-gray.svg')
                 }
             });
         });
-    }); // <-- ИСПРАВЛЕНО: закрытие .then(data => { ... })
+    });
 
 backBtn.addEventListener('click', () => {
     const centersView = document.getElementById('centers-view');

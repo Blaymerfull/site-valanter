@@ -8,7 +8,7 @@ namespace VolunteerMap.Models
         public int ApplicationId { get; set; }
 
         [Required]
-        public int DistrictId { get; set; } // Связь с ID района
+        public string DistrictId { get; set; } // Связь с ID района
 
         [Required]
         public int UserId { get; set; } // ID пользователя, создавшего заявку

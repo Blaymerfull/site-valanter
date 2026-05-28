@@ -1,0 +1,88 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using VolunteerMap.Models;
+
+namespace VolunteerMap.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ApplicationsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public ApplicationsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // 1. ПОДАЧА ЗАЯВКИ ПОЛЬЗОВАТЕЛЕМ (POST: api/applications)
+        [HttpPost]
+        public async Task<IActionResult> CreateApplication([FromBody] VolunteerApplication app)
+        {
+            if (app == null) return BadRequest("Некорректные данные формы.");
+
+            app.Status = "Pending"; // Принудительно ставим статус ожидания
+            app.CreatedAt = DateTime.Now;
+
+            _context.VolunteerApplications.Add(app);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Заявка успешно отправлена на модерацию администратору!" });
+        }
+
+        // 2. ПОЛУЧЕНИЕ ВСЕХ ЗАЯВОК ДЛЯ АДМИНА (GET: api/applications/pending)
+        [HttpGet("pending")]
+        public async Task<IActionResult> GetPendingApplications()
+        {
+            var apps = await _context.VolunteerApplications
+                .Where(a => a.Status == "Pending")
+                .OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
+
+            return Ok(apps);
+        }
+
+        // 3. ОДОБРЕНИЕ ЗАЯВКИ АДМИНИСТРАТОРОМ (POST: api/applications/approve/{id})
+        [HttpPost("approve/{id}")]
+        public async Task<IActionResult> ApproveApplication(int id)
+        {
+            var app = await _context.VolunteerApplications.FindAsync(id);
+            if (app == null) return NotFound("Заявка не найдена.");
+
+            app.Status = "Approved";
+
+            // Переносим одобренные данные в основную таблицу волонтерских центров
+            var newCenter = new VolunteerCenter
+            {
+                DistrictId = app.DistrictId.ToString(), // Синхронизируем строковый ID
+                Name = app.Name,
+                Description = app.Description,
+                Address = app.Address,
+                Contacts = app.Contacts,
+                ImageUrl = app.ImageUrl
+            };
+
+            _context.VolunteerCenters.Add(newCenter);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Заявка одобрена. Центр успешно добавлен на карту!" });
+        }
+
+        // 4. ОТКЛОНЕНИЕ ЗАЯВКИ АДМИНИСТРАТОРОМ (POST: api/applications/reject/{id})
+        [HttpPost("reject/{id}")]
+        public async Task<IActionResult> RejectApplication(int id)
+        {
+            var app = await _context.VolunteerApplications.FindAsync(id);
+            if (app == null) return NotFound("Заявка не найдена.");
+
+            app.Status = "Rejected";
+
+            // Если нужно физически удалить строчку из БД:
+            _context.VolunteerApplications.Remove(app);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Заявка отклонена и удалена из списка." });
+        }
+    }
+}

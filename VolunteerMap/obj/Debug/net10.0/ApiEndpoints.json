@@ -1,5 +1,63 @@
 [
   {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "CreateApplication",
+    "RelativePath": "api/Applications",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "app",
+        "Type": "VolunteerMap.Models.VolunteerApplication",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "ApproveApplication",
+    "RelativePath": "api/Applications/approve/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "GetPendingApplications",
+    "RelativePath": "api/Applications/pending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "RejectApplication",
+    "RelativePath": "api/Applications/reject/{id}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "VolunteerMap.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
