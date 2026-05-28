@@ -58,6 +58,27 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "UpdateApplication",
+    "RelativePath": "api/Applications/update/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedApp",
+        "Type": "VolunteerMap.Models.VolunteerApplication",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "VolunteerMap.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",

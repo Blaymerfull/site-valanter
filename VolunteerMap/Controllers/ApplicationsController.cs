@@ -84,5 +84,24 @@ namespace VolunteerMap.Controllers
 
             return Ok(new { message = "Заявка отклонена и удалена из списка." });
         }
+        // 5. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateApplication(int id, [FromBody] VolunteerApplication updatedApp)
+        {
+            var app = await _context.VolunteerApplications.FindAsync(id);
+            if (app == null) return NotFound("Заявка не найдена.");
+
+            // Обновляем поля заявки измененными данными из формы
+            app.Name = updatedApp.Name;
+            app.Description = updatedApp.Description;
+            app.Address = updatedApp.Address;
+            app.Contacts = updatedApp.Contacts;
+            app.ImageUrl = updatedApp.ImageUrl;
+            app.DistrictId = updatedApp.DistrictId; // Район тоже можно перезаписать
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Данные заявки успешно скорректированы!" });
+        }
     }
 }

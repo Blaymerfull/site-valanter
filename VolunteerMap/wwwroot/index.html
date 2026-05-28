@@ -682,6 +682,8 @@ path:hover {
         <span class="custom-close-modal" id="close-add-modal-btn">&times;</span>
         <h2 class="modal-title">Подать заявку на создание центра</h2>
         <form id="center-application-form">
+        <!-- Скрытое поле для хранения ID редактируемой заявки -->
+        <input type="hidden" id="edit-app-id" value="">
             <div class="input-group">
                 <input type="text" id="app-name" placeholder="Название волонтерского центра" required>
             </div>
@@ -873,13 +875,14 @@ if (appForm) {
     appForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Достаем сохраненного пользователя из сессии
         const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
         if (!currentUser) {
             alert("Ошибка сессии. Перезайдите в аккаунт.");
             return;
         }
 
+        const editAppId = document.getElementById('edit-app-id').value;
+        
         const appData = {
             districtId: document.getElementById('app-district').value,
             userId: currentUser.userId,
@@ -890,19 +893,29 @@ if (appForm) {
             imageUrl: document.getElementById('app-image').value
         };
 
-        fetch('/api/applications', {
-            method: 'POST',
+        // ОПРЕДЕЛЯЕМ МАРШРУТ И МЕТОД: если есть ID в скрытом поле — это PUT (обновление), если нет — POST (создание)
+        const url = editAppId ? `/api/applications/update/${editAppId}` : '/api/applications';
+        const method = editAppId ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(appData)
         })
         .then(async response => {
-            if (!response.ok) throw new Error('Не удалось отправить заявку.');
+            if (!response.ok) throw new Error('Не удалось обработать запрос.');
             return response.json();
         })
         .then(data => {
             alert(data.message);
-            appForm.reset(); // Очищаем поля формы
+            appForm.reset();
             hideCustomModal(document.getElementById('add-center-modal'));
+            
+            // Если правил админ — возвращаем его в обновленное окно заявок
+            if (editAppId) {
+                showCustomModal(document.getElementById('view-apps-modal'));
+                loadPendingApplications();
+            }
         })
         .catch(err => alert(err.message));
     });
@@ -935,6 +948,8 @@ function loadPendingApplications() {
                     <div style="margin-top:15px; display:flex; gap:10px;">
                         <button onclick="moderateApp(${app.applicationId}, 'approve')" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Одобрить</button>
                         <button onclick="moderateApp(${app.applicationId}, 'reject')" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Отклонить</button>
+                        <!-- НОВАЯ КНОПКА ИЗМЕНЕНИЯ -->
+                        <button onclick="openEditAppForm(${JSON.stringify(app).replace(/"/g, '&quot;')})" style="background:#f39c12; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Изменить</button>
                     </div>
                 `;
                 appsListContainer.appendChild(item);
@@ -954,6 +969,37 @@ window.moderateApp = function(id, action) {
             loadPendingApplications(); // Перезагружаем список
         })
         .catch(err => alert("Ошибка при обработке действия."));
+};
+
+// Функция открытия формы для редактирования заявки админом
+window.openEditAppForm = function(app) {
+    // 1. Прячем окно со списком заявок
+    hideCustomModal(document.getElementById('view-apps-modal'));
+    
+    // 2. Открываем форму добавления центра
+    const addModal = document.getElementById('add-center-modal');
+    showCustomModal(addModal);
+    
+    // Подгружаем регионы (если еще не подгружены)
+    loadRegionsToForm();
+
+    // 3. Меняем заголовок формы и текст кнопки на админские
+    addModal.querySelector('.modal-title').innerText = "Редактирование заявки администратором";
+    addModal.querySelector('.action-btn').innerText = "Сохранить изменения";
+
+    // 4. Заполняем форму текущими данными заявки
+    document.getElementById('edit-app-id').value = app.applicationId;
+    document.getElementById('app-name').value = app.name;
+    document.getElementById('app-description').value = app.description || '';
+    document.getElementById('app-address').value = app.address || '';
+    document.getElementById('app-contacts').value = app.contacts || '';
+    document.getElementById('app-image').value = app.imageUrl || '';
+    
+    // Так как списки связанные, выбор района заблокируем до ручного выбора региона админом
+    document.getElementById('app-region').value = "";
+    const distSelect = document.getElementById('app-district');
+    distSelect.innerHTML = '<option value="" disabled selected>Заново выберите регион для смены района</option>';
+    distSelect.disabled = true;
 };
 
 
@@ -1148,6 +1194,13 @@ closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
 addCenterBtn.addEventListener('click', () => {
     showCustomModal(addCenterModal);
     loadRegionsToForm(); // Вызываем загрузку регионов вместо старой функции
+    // СБРАСЫВАЕМ форму к исходному состоянию пользователя
+    document.getElementById('edit-app-id').value = "";
+    appForm.reset();
+    addCenterModal.querySelector('.modal-title').innerText = "Подать заявку на создание центра";
+    addCenterModal.querySelector('.action-btn').innerText = "Отправить на модерацию";
+    document.getElementById('app-district').innerHTML = '<option value="" disabled selected>Сначала выберите регион</option>';
+    document.getElementById('app-district').disabled = true;
 });
 closeAddModalBtn.addEventListener('click', () => hideCustomModal(addCenterModal));
 
