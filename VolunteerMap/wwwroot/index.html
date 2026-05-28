@@ -478,8 +478,8 @@ path:hover {
     height: 100vh;
     z-index: 10;
     
-    /* ВКЛЮЧАЕМ СВЕРХУ ПАДДИНГ, чтобы карточки не залезали под поиск */
-    padding-top: 140px; 
+    /* ВКЛЮЧАЕМ СВЕРХУ ПАДДИНГ, чтобы карточки не залезали под поиск
+    padding-top: 140px; */
     
     /* РАЗРЕШАЕМ СКРОЛЛ только внутри этого контейнера */
     overflow-y: auto; 
@@ -1162,6 +1162,31 @@ toLoginBtn.addEventListener('click', () => {
 });
 
 
+// Функция управления видимостью верхней панели (поиск, кнопки, личный кабинет)
+function toggleAuthPanel(show) {
+    const authPanel = document.querySelector('.auth-panel');
+    if (!authPanel) return;
+
+    if (show) {
+        authPanel.style.display = 'flex';
+        // Даем микропаузу для запуска плавной анимации opacity
+        setTimeout(() => {
+            authPanel.style.transition = 'opacity 0.5s ease';
+            authPanel.style.opacity = '1';
+            authPanel.style.pointerEvents = 'auto';
+        }, 10);
+    } else {
+        authPanel.style.transition = 'opacity 0.4s ease';
+        authPanel.style.opacity = '0';
+        authPanel.style.pointerEvents = 'none';
+        // Полностью убираем из DOM через 400мс, чтобы элементы не перехватывали фокус
+        setTimeout(() => {
+            if (authPanel.style.opacity === '0') {
+                authPanel.style.display = 'none';
+            }
+        }, 400);
+    }
+}
 
 fetch('Blank_map_of_Russia-gray.svg')   
     .then(res => res.text())
@@ -1192,6 +1217,12 @@ fetch('Blank_map_of_Russia-gray.svg')
             path.addEventListener('mouseleave', () => tooltip.style.opacity = '0');
 
             path.addEventListener('click', (e) => {
+
+                    if (document.body.classList.contains('scanning')) return;
+                        e.stopPropagation();
+
+                        // Прячем всю верхнюю панель управления (кнопки, поиск, почту)
+                        toggleAuthPanel(false); 
                 // 1. Плавно гасим карту России
                 wrapper.style.transition = 'opacity 0.6s ease';
                 wrapper.style.opacity = '0';
@@ -1323,6 +1354,8 @@ backBtn.addEventListener('click', () => {
                 wrapper.classList.remove('map-hidden');
                 document.body.classList.remove('scanning');
                 tooltip.style.visibility = 'visible';
+                // ВОЗВРАЩАЕМ панель управления на главной карте
+                toggleAuthPanel(true); 
             }, 50);
 
         }, 500); // Это время должно совпадать с transition в CSS (0.5s)
