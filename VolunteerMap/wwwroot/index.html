@@ -1193,6 +1193,13 @@ closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
 
 addCenterBtn.addEventListener('click', () => {
     showCustomModal(addCenterModal);
+    // Принудительно затираем значения и очищаем список районов
+    if (appForm) appForm.reset();
+    if (appRegionSelect) appRegionSelect.value = "";
+    if (appDistrictSelect) {
+        appDistrictSelect.innerHTML = '<option value="" disabled selected>Сначала выберите регион</option>';
+        appDistrictSelect.disabled = true;
+    }
     loadRegionsToForm(); // Вызываем загрузку регионов вместо старой функции
     // СБРАСЫВАЕМ форму к исходному состоянию пользователя
     document.getElementById('edit-app-id').value = "";
