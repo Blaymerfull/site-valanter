@@ -34,10 +34,26 @@ namespace VolunteerMap.Controllers
         [HttpGet("pending")]
         public async Task<IActionResult> GetPendingApplications()
         {
-            var apps = await _context.VolunteerApplications
-                .Where(a => a.Status == "Pending")
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync();
+            // Соединяем таблицу заявок с таблицей районов, чтобы узнать RegionId (ParentRegionId)
+            var apps = await (from a in _context.VolunteerApplications
+                              join d in _context.Districts on a.DistrictId.ToString() equals d.DistrictId
+                              where a.Status == "Pending"
+                              orderby a.CreatedAt descending
+                              select new
+                              {
+                                  a.ApplicationId,
+                                  a.DistrictId,
+                                  a.UserId,
+                                  a.Name,
+                                  a.Description,
+                                  a.Address,
+                                  a.Contacts,
+                                  a.ImageUrl,
+                                  a.Status,
+                                  a.CreatedAt,
+                                  RegionId = d.ParentRegionId // Добавляем ID региона в ответ сервера
+                              })
+                              .ToListAsync();
 
             return Ok(apps);
         }

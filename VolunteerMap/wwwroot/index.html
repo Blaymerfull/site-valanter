@@ -972,57 +972,89 @@ window.moderateApp = function(id, action) {
 };
 
 // Функция открытия формы для редактирования заявки админом
-window.openEditAppForm = function(app) {
-    // 1. Прячем окно со списком заявок
-    hideCustomModal(document.getElementById('view-apps-modal'));
-    
-    // 2. Открываем форму добавления центра
-    const addModal = document.getElementById('add-center-modal');
-    showCustomModal(addModal);
-    
-    // Подгружаем регионы (если еще не подгружены)
-    loadRegionsToForm();
+    window.openEditAppForm = function (app) {
+        // 1. Прячем окно со списком заявок и открываем форму
+        hideCustomModal(document.getElementById('view-apps-modal'));
+        const addModal = document.getElementById('add-center-modal');
+        showCustomModal(addModal);
 
-    // 3. Меняем заголовок формы и текст кнопки на админские
-    addModal.querySelector('.modal-title').innerText = "Редактирование заявки администратором";
-    addModal.querySelector('.action-btn').innerText = "Сохранить изменения";
+        // Переименовываем интерфейс под режим редактирования
+        addModal.querySelector('.modal-title').innerText = "Редактирование заявки администратором";
+        addModal.querySelector('.action-btn').innerText = "Сохранить изменения";
 
-    // 4. Заполняем форму текущими данными заявки
-    document.getElementById('edit-app-id').value = app.applicationId;
-    document.getElementById('app-name').value = app.name;
-    document.getElementById('app-description').value = app.description || '';
-    document.getElementById('app-address').value = app.address || '';
-    document.getElementById('app-contacts').value = app.contacts || '';
-    document.getElementById('app-image').value = app.imageUrl || '';
-    
-    // Так как списки связанные, выбор района заблокируем до ручного выбора региона админом
-    document.getElementById('app-region').value = "";
-    const distSelect = document.getElementById('app-district');
-    distSelect.innerHTML = '<option value="" disabled selected>Заново выберите регион для смены района</option>';
-    distSelect.disabled = true;
-};
+        // 2. Заполняем текстовые поля данными заявки
+        document.getElementById('edit-app-id').value = app.applicationId;
+        document.getElementById('app-name').value = app.name;
+        document.getElementById('app-description').value = app.description || '';
+        document.getElementById('app-address').value = app.address || '';
+        document.getElementById('app-contacts').value = app.contacts || '';
+        document.getElementById('app-image').value = app.imageUrl || '';
+
+        // 3. Асинхронное заполнение выпадающих списков
+        if (appRegionSelect && appDistrictSelect) {
+            // Сначала ЖДЕМ, пока загрузятся регионы
+            loadRegionsToForm().then(() => {
+                // Теперь регионы точно есть в HTML. Выставляем нужный:
+                appRegionSelect.value = app.regionId;
+
+                // Включаем индикатор загрузки для районов
+                appDistrictSelect.innerHTML = '<option value="" disabled selected>Загрузка районов...</option>';
+                appDistrictSelect.disabled = true;
+
+                // Запрашиваем районы для этой конкретной области
+                return fetch(`/api/map/districts/${app.regionId}`);
+            })
+                .then(res => {
+                    if (!res) return; // Если первый шаг упал
+                    return res.json();
+                })
+                .then(districts => {
+                    if (!districts) return;
+
+                    appDistrictSelect.innerHTML = '<option value="" disabled selected>Выберите район расположения</option>';
+
+                    districts.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d.districtId;
+                        opt.innerText = d.districtName;
+
+                        // Проверяем совпадение ID района с заявкой (приводим к строке на всякий случай)
+                        if (String(d.districtId) === String(app.districtId)) {
+                            opt.selected = true;
+                        }
+                        appDistrictSelect.appendChild(opt);
+                    });
+
+                    appDistrictSelect.disabled = false; // Активируем список районов
+                })
+                .catch(err => {
+                    console.error("Ошибка автоподгрузки районов:", err);
+                    appDistrictSelect.innerHTML = '<option value="" disabled selected>Ошибка загрузки</option>';
+                });
+        }
+    };
 
 
 
 // 1. Функция загрузки ВСЕХ регионов при открытии модального окна
-function loadRegionsToForm() {
-    if (!appRegionSelect) return;
-    
-    // Если регионы уже загружены ранее, не шлем запрос повторно
-    if (appRegionSelect.children.length > 1) return;
+    function loadRegionsToForm() {
+        if (!appRegionSelect) return Promise.resolve();
 
-    fetch('/api/map/regions')
-        .then(res => res.json())
-        .then(regions => {
-            regions.forEach(r => {
-                const opt = document.createElement('option');
-                opt.value = r.regionId;   // В value пишем ID для бэкенда
-                opt.innerText = r.fullName; // Пользователь видит название
-                appRegionSelect.appendChild(opt);
-            });
-        })
-        .catch(err => console.error("Ошибка загрузки регионов:", err));
-}
+        // Если регионы уже загружены, сразу говорим "готово"
+        if (appRegionSelect.children.length > 1) return Promise.resolve();
+
+        return fetch('/api/map/regions')
+            .then(res => res.json())
+            .then(regions => {
+                regions.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.regionId;
+                    opt.innerText = r.fullName;
+                    appRegionSelect.appendChild(opt);
+                });
+            })
+            .catch(err => console.error("Ошибка загрузки регионов:", err));
+    }
 
 // 2. Обработчик выбора региона — подгружает соответствующие районы
 if (appRegionSelect) {
