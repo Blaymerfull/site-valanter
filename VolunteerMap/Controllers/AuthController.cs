@@ -17,7 +17,7 @@ namespace VolunteerMap.Controllers
             _context = context;
         }
 
-        // 1. МАРШРУТ ДЛЯ РЕГИСТРАЦИИ (POST: api/auth/register)
+        // МАРШРУТ ДЛЯ РЕГИСТРАЦИИ (POST: api/auth/register)
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AuthModel model)
         {
@@ -42,7 +42,7 @@ namespace VolunteerMap.Controllers
             return Ok(new { message = "Регистрация успешно завершена" });
         }
 
-        // 2. МАРШРУТ ДЛЯ ВХОДА (POST: api/auth/login)
+        // МАРШРУТ ДЛЯ ВХОДА (POST: api/auth/login)
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthModel model)
         {
@@ -66,7 +66,7 @@ namespace VolunteerMap.Controllers
             });
         }
 
-        // Вспомогательный метод для хэширования паролей
+        // Метод для хэширования паролей
         private string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())

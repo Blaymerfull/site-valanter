@@ -128,6 +128,22 @@
   },
   {
     "ContainingType": "VolunteerMap.Controllers.MapController",
+    "Method": "DeleteCenter",
+    "RelativePath": "api/Map/delete-center/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.MapController",
     "Method": "GetDistrictsByRegion",
     "RelativePath": "api/Map/districts/{regionCode}",
     "HttpMethod": "GET",
@@ -169,6 +185,27 @@
         "Name": "filter",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.MapController",
+    "Method": "UpdateCenter",
+    "RelativePath": "api/Map/update-center/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedCenter",
+        "Type": "VolunteerMap.Models.VolunteerCenter",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

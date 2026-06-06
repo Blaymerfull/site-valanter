@@ -7,12 +7,16 @@
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\controllers\\applicationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\applicationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\mapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\site-valanter\\volunteermap\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,33 +26,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ApplicationsController.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\ApplicationsController.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\ApplicationsController.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\ApplicationsController.cs",
-              "RelativeToolTip": "VolunteerMap\\Controllers\\ApplicationsController.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAuwCsAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T05:53:06.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "MapController.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
-              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\MapController.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
-              "RelativeToolTip": "VolunteerMap\\Controllers\\MapController.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAQwDUAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-11T18:55:42.441Z"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -57,10 +36,47 @@
               "RelativeDocumentMoniker": "VolunteerMap\\wwwroot\\index.html",
               "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeToolTip": "VolunteerMap\\wwwroot\\index.html",
-              "ViewState": "AgIAAPcDAAAAAAAAAAAcwNUDAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAABIFAAAAAAAAAAAuwCsFAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2026-05-10T12:14:11.441Z",
+              "IsPinned": true,
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "VolunteerMap\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAkwDAAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T16:29:26.669Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ApplicationsController.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\ApplicationsController.cs",
+              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\ApplicationsController.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\ApplicationsController.cs",
+              "RelativeToolTip": "VolunteerMap\\Controllers\\ApplicationsController.cs",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAuwCsAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-28T05:53:06.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MapController.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
+              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\MapController.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\site-valanter\\VolunteerMap\\Controllers\\MapController.cs",
+              "RelativeToolTip": "VolunteerMap\\Controllers\\MapController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAkwDkAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-11T18:55:42.441Z"
             }
           ]
         }
