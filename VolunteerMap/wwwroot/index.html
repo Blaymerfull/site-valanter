@@ -19,25 +19,32 @@
         /* Фиксированная нижняя панель для кнопок админа */
         .admin-bottom-panel {
             position: fixed;
-            bottom: 40px; /* На той же высоте, что и крестик */
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
+            /* Флекс-контейнер выстраивает всё в один ровный ряд */
             display: flex;
-            gap: 120px; /* Большой отступ, чтобы кнопки встали СЛЕВА и СПРАВА от крестика */
-            z-index: 1000002; /* Выше самого крестика */
-            pointer-events: none; /* Пропускаем клики мимо контейнера */
+            align-items: center; /* Центрирует все элементы строго по вертикали */
+            justify-content: center; /* Центрирует по горизонтали */
+            gap: 30px; /* Аккуратный фиксированный отступ между кнопками и крестиком */
+
+            z-index: 1000002;
+            pointer-events: none; /* Пропускаем клики мимо прозрачного фона панели */
         }
 
         /* Общий стиль для кнопок модерации */
         .admin-action-btn {
             pointer-events: auto; /* Возвращаем кликабельность кнопкам */
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 24px;
+            /* ЖЕСТКО ФИКСИРУЕМ ВЫСОТУ */
+            height: 44px;
+            padding: 0 25px;
             border-radius: 4px;
             font-weight: bold;
             font-size: 0.95em;
             cursor: pointer;
             color: white;
+            box-sizing: border-box;
             transition: background 0.3s, transform 0.3s, border-color 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
@@ -52,7 +59,6 @@
                     transform: scale(1.05);
                 }
 
-            /* Кнопка "Удалить" (справа от крестика) */
             .admin-action-btn.delete-btn {
                 background: #e74c3c;
             }
@@ -616,29 +622,33 @@ path:hover {
     padding-bottom: 100px;
 }
 
-.close-modal {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    color: #e50914;
-    font-size: 50px;
-    line-height: 0;
-    padding-bottom: 8px;
-    cursor: pointer;
-    z-index: 1000001;
-    transition: transform 0.3s ease;
-}
+        .close-modal {
+            pointer-events: auto;
+            /* ЖЕСТКО ЗАДАЕМ КВАДРАТНУЮ ОБЛАСТЬ */
+            width: 44px !important;
+            height: 44px !important;
+            /* КРИТИЧНО: запрещаем флекс-контейнеру сжимать этот блок */
+            flex-shrink: 0;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px; /* Размер самого символа "X" внутри квадрата */
+            font-weight: bold;
+            line-height: 1; /* Возвращаем стандартную высоту строки */
 
-.close-modal:hover {
-    transform: translateX(-50%) scale(1.2);
-    color: white;
-}
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, color 0.3s ease;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            /* Раскомментируй строку ниже на время проверки, чтобы увидеть реальную область клика */
+            /* background: rgba(255,255,255,0.1); border-radius: 4px; */
+        }
+
+            .close-modal:hover {
+                color: #e50914;
+                transform: scale(1.15);
+            }
 
 @keyframes modalSlideUp {
     from { transform: translateY(50px); opacity: 0; }
@@ -785,15 +795,21 @@ path:hover {
     <div id="centers-view" class="centers-hidden">
         <div id="centers-list" class="centers-grid"></div>
     </div>
+    
     <div id="modal-overlay" style="display:none;">
-        <span id="close-modal" class="close-modal">&times;</span>
-        <!-- Нижняя панель действий администратора (скрыта по умолчанию) -->
-        <div id="admin-fixed-panel" class="admin-bottom-panel" style="display: none;">
-            <button id="admin-edit-center-btn" class="admin-action-btn edit-btn">Изменить</button>
-            <button id="admin-delete-center-btn" class="admin-action-btn delete-btn">Удалить</button>
-        </div>
-        <div class="modal-content" id="modal-body"></div>
+    <!-- Нижняя панель управления: теперь крестик внутри неё -->
+    <div id="admin-fixed-panel" class="admin-bottom-panel" style="display: none;">
+        <button id="admin-edit-center-btn" class="admin-action-btn edit-btn">Изменить</button>
+        
+        <!-- Крестик закрытия карточки теперь сидит по центру панели -->
+        <span class="close-modal" id="close-modal">&times;</span>
+        
+        <button id="admin-delete-center-btn" class="admin-action-btn delete-btn">Удалить</button>
     </div>
+
+    <!-- Контентная часть карточки -->
+    <div class="modal-content" id="modal-body"></div>
+</div>
 
 <script>
    const wrapper = document.getElementById('map-wrapper');
@@ -1602,13 +1618,15 @@ function renderCenters(data) {
 
     function openFullView(center) {
         console.log("Открываем карточку (сырые данные):", center);
-        currentActiveCenter = center; // Сохраняем объект глобально
+        currentActiveCenter = center; // Сохраняем объект глобально для кнопок изменения/удаления
 
         const modal = document.getElementById('modal-overlay');
         const body = document.getElementById('modal-body');
         const closeBtn = document.getElementById('close-modal');
         const backBtnElem = document.getElementById('back-button');
         const adminPanel = document.getElementById('admin-fixed-panel');
+        const editBtn = document.getElementById('admin-edit-center-btn');
+        const deleteBtn = document.getElementById('admin-delete-center-btn');
 
         if (backBtnElem) {
             backBtnElem.style.opacity = '0';
@@ -1629,7 +1647,7 @@ function renderCenters(data) {
         const cImg = center.imageUrl || center.ImageUrl || "";
         const dId = center.districtId || center.DistrictId || "";
 
-        // Отрисовка контента карточки
+        // Отрисовка текстового контента карточки
         body.innerHTML = `
         ${cImg ? `<img src="${cImg}" style="width:100%; height:400px; object-fit:cover; border-radius: 15px 15px 0 0;" onerror="this.style.display='none'">` : ''}
         <div style="padding: 40px; background:#141414;">
@@ -1642,140 +1660,133 @@ function renderCenters(data) {
         </div>
     `;
 
-        // ПРОВЕРКА РОЛИ АДМИНИСТРАТОРА ДЛЯ ПОКАЗА НИЖНЕЙ ПАНЕЛИ
+        // ПРОВЕРКА РОЛИ ПОЛЬЗОВАТЕЛЯ ДЛЯ УПРАВЛЕНИЯ ПАНЕЛЬЮ
         const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
 
-        if (currentUser && currentUser.role === 'Admin' && adminPanel) {
+        if (adminPanel) {
+            // Панель включаем ВСЕГДА, так как внутри неё теперь лежит крестик закрытия
             adminPanel.style.display = 'flex';
 
-            const deleteBtn = document.getElementById('admin-delete-center-btn');
-            const editBtn = document.getElementById('admin-edit-center-btn');
+            if (currentUser && currentUser.role === 'Admin') {
+                // Если вошел АДМИНИСТРАТОР — показываем оранжевую и красную кнопки управления
+                if (editBtn) editBtn.style.display = 'block';
+                if (deleteBtn) deleteBtn.style.display = 'block';
 
-            // 1. ОБРАБОТЧИК КНОПКИ "УДАЛИТЬ"
-            deleteBtn.onclick = () => {
-                if (!cId) {
-                    alert("Ошибка: Не удалось определить ID центра для удаления.");
-                    return;
-                }
-                if (confirm(`Вы уверены, что хотите НАВСЕГДА удалить центр "${cName}" из системы?`)) {
-                    fetch(`/api/map/delete-center/${cId}`, { method: 'DELETE' })
-                        .then(res => res.json())
-                        .then(data => {
-                            alert(data.message);
-                            document.getElementById('close-modal').click();
-                            location.reload();
-                        })
-                        .catch(err => alert("Ошибка при удалении центра"));
-                }
-            };
-
-            // 2. ОБРАБОТЧИК КНОПКИ "ИЗМЕНИТЬ" (ЗАЩИЩЕННАЯ И СИНХРОНИЗИРОВАННАЯ ВЕРСИЯ)
-            editBtn.onclick = () => {
-                console.log("Админ нажал Изменить. Начинаем точечное заполнение формы...");
-
-                // Принудительно полностью прячем и гасим окно просмотра карточки,
-                // чтобы оно физически не перекрывало открывающуюся форму
-                modal.style.opacity = '0';
-                modal.style.display = 'none';
-                if (closeBtn) closeBtn.style.display = 'none';
-                if (adminPanel) adminPanel.style.display = 'none';
-
-                // Находим форму и модальное окно добавления центра
-                const addModal = document.getElementById('add-center-modal');
-                if (!addModal) {
-                    alert("Критическая ошибка: Элемент #add-center-modal не найден на странице!");
-                    return;
-                }
-
-                showCustomModal(addModal);
-                document.body.style.overflow = 'hidden'; // Замораживаем скролл фона
-
-                // Настройка текстовых заголовков формы (безопасно)
-                const modalTitle = addModal.querySelector('.modal-title');
-                if (modalTitle) modalTitle.innerText = "Редактирование волонтерского центра";
-
-                const submitBtn = addModal.querySelector('button[type="submit"]') || addModal.querySelector('.action-btn');
-                if (submitBtn) submitBtn.innerText = "Сохранить изменения";
-                const hiddenCenterField = document.getElementById('edit-center-id') || document.querySelector('#edit-center-id');
-                const hiddenAppField = document.getElementById('edit-app-id') || document.querySelector('#edit-app-id');
-
-                if (hiddenCenterField) {
-                    hiddenCenterField.value = cId;
-                    console.log("ID центра (21) успешно записан в скрытое поле HTML! Текущее значение поля:", hiddenCenterField.value);
-                } else {
-                    alert("Критическая ошибка: Скрытое поле #edit-center-id не найдено в HTML! Проверь index.html");
-                }
-
-                if (hiddenAppField) {
-                    hiddenAppField.value = "";
-                }
-
-                // Запись скрытых ID в поля по их уникальным идентификаторам
-                if (document.getElementById('edit-center-id')) document.getElementById('edit-center-id').value = cId;
-                if (document.getElementById('edit-app-id')) document.getElementById('edit-app-id').value = "";
-
-                // Ищем элементы по их реальным ID через селектор getElementById
-                const inputName = document.getElementById('app-name');
-                const inputDesc = document.getElementById('app-description');
-                const inputAddr = document.getElementById('app-address');
-                const inputCont = document.getElementById('app-contacts');
-                const inputImg = document.getElementById('app-image');
-
-                // Принудительно вливаем данные и выводим логи для контроля
-                if (inputName) { inputName.value = cName; console.log("Успех! Имя записано в поле:", cName); } else { console.log("Ошибка: Элемент #app-name не найден внутри формы!"); }
-                if (inputDesc) inputDesc.value = cDesc;
-                if (inputAddr) inputAddr.value = cAddr;
-                if (inputCont) inputCont.value = cCont;
-                if (inputImg) inputImg.value = cImg;
-
-                // Автозаполнение связанных списков регионов и районов
-                const modalRegionSelect = document.getElementById('app-region');
-                const modalDistrictSelect = document.getElementById('app-district');
-
-                if (modalRegionSelect && modalDistrictSelect) {
-                    loadRegionsToForm().then(() => {
-                        const rId = currentActiveCenter.regionId || currentActiveCenter.RegionId;
-
-                        if (rId) {
-                            modalRegionSelect.value = rId;
-                            modalDistrictSelect.innerHTML = '<option value="" disabled selected>Загрузка районов...</option>';
-                            modalDistrictSelect.disabled = true;
-
-                            return fetch(`/api/map/districts/${rId}`);
-                        } else {
-                            modalRegionSelect.value = "";
-                            modalDistrictSelect.innerHTML = '<option value="" disabled selected>Заново выберите регион для смены района</option>';
-                            modalDistrictSelect.disabled = true;
-                            return null;
+                // 1. НАВЕШИВАЕМ ЛОГИКУ НА КНОПКУ "УДАЛИТЬ"
+                if (deleteBtn) {
+                    deleteBtn.onclick = () => {
+                        if (!cId) {
+                            alert("Ошибка: Не удалось определить ID центра для удаления.");
+                            return;
                         }
-                    })
-                        .then(res => {
-                            if (!res) return;
-                            return res.json();
-                        })
-                        .then(districts => {
-                            if (!districts) return;
-                            modalDistrictSelect.innerHTML = '<option value="" disabled selected>Выберите район расположения</option>';
-
-                            districts.forEach(d => {
-                                const opt = document.createElement('option');
-                                opt.value = d.districtId;
-                                opt.innerText = d.districtName;
-                                if (String(d.districtId) === String(dId)) {
-                                    opt.selected = true;
-                                }
-                                modalDistrictSelect.appendChild(opt);
-                            });
-                            modalDistrictSelect.disabled = false;
-                        })
-                        .catch(err => {
-                            console.error("Ошибка автоподгрузки списков регионов/районов:", err);
-                            modalDistrictSelect.innerHTML = '<option value="" disabled selected>Ошибка загрузки</option>';
-                        });
+                        if (confirm(`Вы уверены, что хотите НАВСЕГДА удалить центр "${cName}" из системы?`)) {
+                            fetch(`/api/map/delete-center/${cId}`, { method: 'DELETE' })
+                                .then(res => res.json())
+                                .then(data => {
+                                    alert(data.message);
+                                    document.getElementById('close-modal').click();
+                                    location.reload();
+                                })
+                                .catch(err => alert("Ошибка при удалении центра"));
+                        }
+                    };
                 }
-            };
-        } else if (adminPanel) {
-            adminPanel.style.display = 'none';
+
+                // 2. НАВЕШИВАЕМ ЛОГИКУ НА КНОПКУ "ИЗМЕНИТЬ"
+                if (editBtn) {
+                    editBtn.onclick = () => {
+                        console.log("Админ нажал Изменить. Начинаем точечное заполнение формы...");
+
+                        // Скрываем и гасим карточку, чтобы освободить экран для формы
+                        if (modal) { modal.style.opacity = '0'; modal.style.display = 'none'; }
+                        if (closeBtn) closeBtn.style.display = 'none';
+                        if (adminPanel) adminPanel.style.display = 'none';
+
+                        const addModal = document.getElementById('add-center-modal');
+                        if (!addModal) {
+                            alert("Критическая ошибка: Элемент #add-center-modal не найден на странице!");
+                            return;
+                        }
+
+                        showCustomModal(addModal);
+                        document.body.style.overflow = 'hidden'; // Фиксируем скролл фона
+
+                        // Настройка заголовков формы редактирования
+                        const modalTitle = addModal.querySelector('.modal-title');
+                        if (modalTitle) modalTitle.innerText = "Редактирование волонтерского центра";
+
+                        const submitBtn = addModal.querySelector('button[type="submit"]') || addModal.querySelector('.action-btn');
+                        if (submitBtn) submitBtn.innerText = "Сохранить изменения";
+
+                        // Запись скрытых ID в поля по их уникальным идентификаторам
+                        if (document.getElementById('edit-center-id')) document.getElementById('edit-center-id').value = cId;
+                        if (document.getElementById('edit-app-id')) document.getElementById('edit-app-id').value = "";
+
+                        // Заполняем текстовые инпуты формы значениями центра
+                        const inputName = document.getElementById('app-name');
+                        const inputDesc = document.getElementById('app-description');
+                        const inputAddr = document.getElementById('app-address');
+                        const inputCont = document.getElementById('app-contacts');
+                        const inputImg = document.getElementById('app-image');
+
+                        if (inputName) { inputName.value = cName; console.log("Успех! Имя записано в поле:", cName); }
+                        if (inputDesc) inputDesc.value = cDesc;
+                        if (inputAddr) inputAddr.value = cAddr;
+                        if (inputCont) inputCont.value = cCont;
+                        if (inputImg) inputImg.value = cImg;
+
+                        // Автозаполнение связанных списков регионов и районов
+                        const modalRegionSelect = document.getElementById('app-region');
+                        const modalDistrictSelect = document.getElementById('app-district');
+
+                        if (modalRegionSelect && modalDistrictSelect) {
+                            loadRegionsToForm().then(() => {
+                                const rId = currentActiveCenter.regionId || currentActiveCenter.RegionId;
+
+                                if (rId) {
+                                    modalRegionSelect.value = rId;
+                                    modalDistrictSelect.innerHTML = '<option value="" disabled selected>Загрузка районов...</option>';
+                                    modalDistrictSelect.disabled = true;
+
+                                    return fetch(`/api/map/districts/${rId}`);
+                                } else {
+                                    modalRegionSelect.value = "";
+                                    modalDistrictSelect.innerHTML = '<option value="" disabled selected>Заново выберите регион для смены района</option>';
+                                    modalDistrictSelect.disabled = true;
+                                    return null;
+                                }
+                            })
+                                .then(res => {
+                                    if (!res) return;
+                                    return res.json();
+                                })
+                                .then(districts => {
+                                    if (!districts) return;
+                                    modalDistrictSelect.innerHTML = '<option value="" disabled selected>Выберите район расположения</option>';
+
+                                    districts.forEach(d => {
+                                        const opt = document.createElement('option');
+                                        opt.value = d.districtId;
+                                        opt.innerText = d.districtName;
+                                        if (String(d.districtId) === String(dId)) {
+                                            opt.selected = true;
+                                        }
+                                        modalDistrictSelect.appendChild(opt);
+                                    });
+                                    modalDistrictSelect.disabled = false;
+                                })
+                                .catch(err => {
+                                    console.error("Ошибка автоподгрузки списков регионов/районов:", err);
+                                    modalDistrictSelect.innerHTML = '<option value="" disabled selected>Ошибка загрузки</option>';
+                                });
+                        }
+                    };
+                }
+            } else {
+                // Если зашел ОБЫЧНЫЙ ПОЛЬЗОВАТЕЛЬ или Гость — принудительно прячем оранжевую и красную кнопки, оставляя только крестик по центру
+                if (editBtn) editBtn.style.display = 'none';
+                if (deleteBtn) deleteBtn.style.display = 'none';
+            }
         }
 
         modal.style.display = 'flex';
@@ -1792,13 +1803,12 @@ function renderCenters(data) {
         const backBtnElem = document.getElementById('back-button');
         const adminPanel = document.getElementById('admin-fixed-panel');
 
-        modal.style.opacity = '0';
-        closeBtn.style.display = 'none';
-        if (adminPanel) adminPanel.style.display = 'none';
+        if (modal) modal.style.opacity = '0';
+        if (adminPanel) adminPanel.style.display = 'none'; // Прячем всю нижнюю панель целиком
 
         setTimeout(() => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            if (modal) modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Возвращаем прокрутку страницы
 
             if (backBtnElem) {
                 backBtnElem.style.opacity = '1';
