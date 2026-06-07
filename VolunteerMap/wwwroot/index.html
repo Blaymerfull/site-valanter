@@ -1379,7 +1379,35 @@ closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
             loadRegionsToForm();
         };
     }
-closeAddModalBtn.addEventListener('click', () => hideCustomModal(addCenterModal));
+if (closeAddModalBtn) {
+    closeAddModalBtn.addEventListener('click', () => {
+        // 1. Закрываем форму изменения
+        const addCenterModal = document.getElementById('add-center-modal');
+        if (addCenterModal) {
+            hideCustomModal(addCenterModal);
+        }
+
+        // 2. Проверяем, правили ли мы готовый центр с карты или поиска
+        const editCenterIdField = document.getElementById('edit-center-id');
+        const editCenterId = editCenterIdField ? editCenterIdField.value : "";
+        const backBtnElem = document.getElementById('back-button');
+
+        if (editCenterId && editCenterId !== "") {
+            // Если админ отменил редактирование, возвращаем кнопку "Назад к карте" в строй
+            console.log("Админ отменил редактирование центра. Возвращаем кнопку 'Назад к карте'...");
+            
+            if (backBtnElem) {
+                backBtnElem.style.display = 'block';
+                // Даем микропаузу, чтобы сработал плавный CSS-переход opacity
+                setTimeout(() => {
+                    backBtnElem.style.opacity = '1';
+                    backBtnElem.style.pointerEvents = 'auto';
+                    backBtnElem.classList.add('visible'); 
+                }, 50);
+            }
+        }
+    });
+}
 
 toRegisterBtn.addEventListener('click', () => {
     loginBlock.style.display = 'none';
