@@ -65,6 +65,8 @@ wwwroot\lib\jquery\LICENSE.txt
 wwwroot\Outline_Map_of_Kemerovo_Oblast.svg
 wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
 wwwroot\README.md
+wwwroot\uploads\0b43966e-053c-46e8-a2a5-420385e5fb14.jpg
+wwwroot\uploads\7d86bd94-af76-44d1-b3c1-8742973f751a.jpg
 wwwroot\index.html
 C:\Users\Blaym\Desktop\Диплом\v2\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
 C:\Users\Blaym\Desktop\Диплом\v2\site-valanter\VolunteerMap\wwwroot\css\site.css
