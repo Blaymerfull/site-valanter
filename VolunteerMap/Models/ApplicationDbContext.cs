@@ -13,4 +13,8 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<User> Users { get; set; }
     public DbSet<VolunteerApplication> VolunteerApplications { get; set; }
+
+
+    public DbSet<Event> Events { get; set; }
+    public DbSet<EventApplication> EventApplications { get; set; }
 }
