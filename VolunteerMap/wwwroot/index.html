@@ -15,6 +15,48 @@
     justify-content: center;
     align-items: center;
 }
+    /* Контейнер текстового контента внутри окна просмотра события */
+.event-view-info-block {
+    padding: 40px;
+    background: #141414;
+    color: white;
+}
+
+.event-view-info-block h1 {
+    color: #e50914; /* Фирменный красный */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.event-view-info-block .event-view-desc {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #eee;
+    margin-bottom: 30px;
+}
+
+.event-view-meta-grid {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #2d2d2d;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 0.95em;
+    color: #bbb;
+}
+
+.event-view-meta-grid p {
+    margin: 0;
+}
+
+.event-view-meta-grid b {
+    color: white;
+}
+
+
+
 
         /* Переключатели вкладок (Табы) */
         .events-tabs {
@@ -1040,8 +1082,16 @@ path:hover {
         </div>
     </div>
 
-    <!-- Контентная часть карточки -->
-    <!--<div class="modal-content" id="modal-body"></div>-->
+    <!-- Модальное окно ДЕТАЛЬНОГО ПРОСМОТРА МЕРОПРИЯТИЯ -->
+    <div id="event-view-modal" class="custom-modal-overlay" style="z-index: 300000;">
+        <div class="custom-modal-content" style="max-width: 700px; padding: 0; overflow: hidden; border-radius: 15px;">
+            <!-- Крестик закрытия окна (фиксирован снизу, как на карточках центров) -->
+            <span class="close-modal" id="close-event-view-btn" style="position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 300001;">&times;</span>
+            
+            <!-- Сюда JS вставит весь контент мероприятия -->
+            <div id="event-view-body"></div>
+        </div>
+    </div>
     </div>
 
     <script>
@@ -2174,7 +2224,67 @@ path:hover {
                 <p style="font-size:0.75em; color:#888; margin:0;">👤 ${ev.coordinatorContacts || ''}</p>
             </div>
         `;
+        card.style.cursor = 'pointer'; // Делаем курсор-палец при наведении
+        card.onclick = (e) => {
+            e.stopPropagation();
+            openFullEventView(ev); // Вызываем функцию открытия при клике
+        };
             return card;
+        }
+
+
+        // =======================================================
+        // ЛОГИКА ОКНА ДЕТАЛЬНОГО ПРОСМОТРА МЕРОПРИЯТИЯ
+        // =======================================================
+        const eventViewModal = document.getElementById('event-view-modal');
+        const eventViewBody = document.getElementById('event-view-body');
+        const closeEventViewBtn = document.getElementById('close-event-view-btn');
+
+        function openFullEventView(ev) {
+            console.log("Открываем детальный просмотр мероприятия:", ev.title);
+
+            if (!eventViewModal || !eventViewBody) return;
+
+            // Форматируем даты проведения
+            const start = new Date(ev.startDate).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+            const end = new Date(ev.endDate).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+
+            // Прячем основную карточку волонтерского центра, чтобы освободить экран
+            const centerModal = document.getElementById('modal-overlay');
+            if (centerModal) centerModal.style.display = 'none';
+
+            // Наполняем модалку события данными
+            eventViewBody.innerHTML = `
+                ${ev.imageUrl ? `<img src="${ev.imageUrl}" style="width:100%; height:350px; object-fit:cover;" onerror="this.style.display='none'">` : '<div style="height:200px; background:#222; display:flex; align-items:center; justify-content:center; color:#555;">Нет обложки мероприятия</div>'}
+                <div class="event-view-info-block">
+                    <h1>${ev.title}</h1>
+                    <div class="event-view-desc">${ev.description || 'Описание задач отсутствует.'}</div>
+                    
+                    <div class="event-view-meta-grid">
+                        <p>📅 <b>Время проведения:</b> с ${start} до ${end}</p>
+                        <p>📍 <b>Место проведения / Сбор:</b> ${ev.location || 'Не указано'}</p>
+                        <p>📞 <b>Координатор события:</b> ${ev.coordinatorContacts || 'Контакты не указаны'}</p>
+                    </div>
+                </div>
+            `;
+
+            // Плавно выводим окно мероприятия на экран
+            showCustomModal(eventViewModal);
+            document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+        }
+
+        // Обработчик закрытия детального просмотра мероприятия
+        if (closeEventViewBtn) {
+            closeEventViewBtn.onclick = function() {
+                if (eventViewModal) hideCustomModal(eventViewModal);
+                
+                // При закрытии карточки события КРИТИЧНО плавно вернуть пользователя назад на карточку волонтерского центра
+                const centerModal = document.getElementById('modal-overlay');
+                if (centerModal) {
+                    centerModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            };
         }
 
         // =======================================================
