@@ -151,6 +151,55 @@ namespace VolunteerMap.Controllers
             // Возвращаем относительный путь веб-сервера для записи в БД
             return $"/uploads/{uniqueFileName}";
         }
+
+        // 6. УДАЛЕНИЕ МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (DELETE: api/events/delete/{id})
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            var ev = await _context.Events.FindAsync(id);
+            if (ev == null) return NotFound(new { message = "Мероприятие не найдено." });
+
+            _context.Events.Remove(ev);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Мероприятие успешно удалено из системы!" });
+        }
+
+        // 7. ИЗМЕНЕНИЕ СУЩЕСТВУЮЩЕГО МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (PUT: api/events/update/{id})
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, [FromForm] EventApplicationForm form)
+        {
+            var ev = await _context.Events.FindAsync(id);
+            if (ev == null) return NotFound(new { message = "Мероприятие не найдено." });
+
+            ev.Title = form.Title;
+            ev.Description = form.Description;
+            ev.StartDate = form.StartDate;
+            ev.EndDate = form.EndDate;
+            ev.Location = form.Location;
+            ev.CoordinatorContacts = form.CoordinatorContacts;
+
+            // Если админ загрузил новую обложку с ПК — обновляем её
+            if (form.ImageFile != null)
+            {
+                // Генерируем имя и сохраняем файл на диск
+                var extension = Path.GetExtension(form.ImageFile.FileName);
+                var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await form.ImageFile.CopyToAsync(stream);
+                }
+                ev.ImageUrl = $"/uploads/{uniqueFileName}";
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Данные мероприятия успешно обновлены!" });
+        }
+
+
     }
 
     // Вспомогательный DTO-класс (модель) для приема Multipart/Form-Data данных с фронтенда

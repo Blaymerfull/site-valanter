@@ -67,6 +67,7 @@ wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
 wwwroot\README.md
 wwwroot\uploads\0b43966e-053c-46e8-a2a5-420385e5fb14.jpg
 wwwroot\uploads\7d86bd94-af76-44d1-b3c1-8742973f751a.jpg
+wwwroot\uploads\94e13826-7fed-4053-9dd1-955b35ab0056.jpg
 wwwroot\uploads\c601b488-c873-4710-9636-71535d8f5533.jpg
 wwwroot\index.html
 C:\Users\Blaym\Desktop\Диплом\v2\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg

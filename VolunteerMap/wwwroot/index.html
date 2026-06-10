@@ -1050,6 +1050,7 @@ path:hover {
             <span class="custom-close-modal" id="close-event-modal-btn">&times;</span>
             <h2 class="modal-title">Предложить мероприятие</h2>
             <form id="event-application-form" enctype="multipart/form-data">
+                <input type="hidden" id="edit-event-id" value="">
                 <div class="input-group">
                     <input type="text" id="event-title" placeholder="Название мероприятия" required>
                 </div>
@@ -1085,10 +1086,14 @@ path:hover {
     <!-- Модальное окно ДЕТАЛЬНОГО ПРОСМОТРА МЕРОПРИЯТИЯ -->
     <div id="event-view-modal" class="custom-modal-overlay" style="z-index: 300000;">
         <div class="custom-modal-content" style="max-width: 700px; padding: 0; overflow: hidden; border-radius: 15px;">
-            <!-- Крестик закрытия окна (фиксирован снизу, как на карточках центров) -->
-            <span class="close-modal" id="close-event-view-btn" style="position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 300001;">&times;</span>
-            
-            <!-- Сюда JS вставит весь контент мероприятия -->
+
+            <!-- Нижняя панель управления администратора для мероприятий -->
+            <div id="admin-event-fixed-panel" class="admin-bottom-panel" style="display: none; z-index: 300002;">
+                <button id="admin-edit-event-btn" class="admin-action-btn edit-btn">Изменить</button>
+                <span class="close-modal" id="close-event-view-btn">&times;</span>
+                <button id="admin-delete-event-btn" class="admin-action-btn delete-btn">Удалить</button>
+            </div>
+
             <div id="event-view-body"></div>
         </div>
     </div>
@@ -2239,46 +2244,97 @@ path:hover {
         const eventViewModal = document.getElementById('event-view-modal');
         const eventViewBody = document.getElementById('event-view-body');
         const closeEventViewBtn = document.getElementById('close-event-view-btn');
+        const adminEventPanel = document.getElementById('admin-event-fixed-panel');
 
         function openFullEventView(ev) {
-            console.log("Открываем детальный просмотр мероприятия:", ev.title);
+            console.log("Открываем детальный просмотр мероприятия:", ev);
 
             if (!eventViewModal || !eventViewBody) return;
 
-            // Форматируем даты проведения
             const start = new Date(ev.startDate).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
             const end = new Date(ev.endDate).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 
-            // Прячем основную карточку волонтерского центра, чтобы освободить экран
             const centerModal = document.getElementById('modal-overlay');
             if (centerModal) centerModal.style.display = 'none';
 
-            // Наполняем модалку события данными
             eventViewBody.innerHTML = `
-                ${ev.imageUrl ? `<img src="${ev.imageUrl}" style="width:100%; height:350px; object-fit:cover;" onerror="this.style.display='none'">` : '<div style="height:200px; background:#222; display:flex; align-items:center; justify-content:center; color:#555;">Нет обложки мероприятия</div>'}
-                <div class="event-view-info-block">
-                    <h1>${ev.title}</h1>
-                    <div class="event-view-desc">${ev.description || 'Описание задач отсутствует.'}</div>
-                    
-                    <div class="event-view-meta-grid">
-                        <p>📅 <b>Время проведения:</b> с ${start} до ${end}</p>
-                        <p>📍 <b>Место проведения / Сбор:</b> ${ev.location || 'Не указано'}</p>
-                        <p>📞 <b>Координатор события:</b> ${ev.coordinatorContacts || 'Контакты не указаны'}</p>
-                    </div>
-                </div>
-            `;
+        ${ev.imageUrl ? `<img src="${ev.imageUrl}" style="width:100%; height:350px; object-fit:cover;" onerror="this.style.display='none'">` : '<div style="height:200px; background:#222; display:flex; align-items:center; justify-content:center; color:#555;">Нет обложки мероприятия</div>'}
+        <div class="event-view-info-block" style="padding-bottom: 120px;"> <!-- Добавили паддинг снизу, чтобы текст не лез под фиксированные кнопки -->
+            <h1>${ev.title}</h1>
+            <div class="event-view-desc">${ev.description || 'Описание задач отсутствует.'}</div>
+            <div class="event-view-meta-grid">
+                <p>📅 <b>Время проведения:</b> с ${start} до ${end}</p>
+                <p>📍 <b>Место проведения / Сбор:</b> ${ev.location || 'Не указано'}</p>
+                <p>📞 <b>Координатор события:</b> ${ev.coordinatorContacts || 'Контакты не указаны'}</p>
+            </div>
+        </div>
+    `;
 
-            // Плавно выводим окно мероприятия на экран
+            // ПРОВЕРКА РОЛИ АДМИНИСТРАТОРА
+            const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+
+            if (adminEventPanel) {
+                adminEventPanel.style.display = 'flex'; // Показываем панель, так как там крестик
+
+                const editEvBtn = document.getElementById('admin-edit-event-btn');
+                const deleteEvBtn = document.getElementById('admin-delete-event-btn');
+
+                if (currentUser && currentUser.role === 'Admin') {
+                    if (editEvBtn) editEvBtn.style.display = 'block';
+                    if (deleteEvBtn) deleteEvBtn.style.display = 'block';
+
+                    // А. Обработчик УДАЛЕНИЯ мероприятия
+                    deleteEvBtn.onclick = () => {
+                        if (confirm(`Вы уверены, что хотите НАВСЕГДА удалить мероприятие "${ev.title}"?`)) {
+                            fetch(`/api/events/delete/${ev.eventId}`, { method: 'DELETE' })
+                                .then(res => res.json())
+                                .then(data => {
+                                    alert(data.message);
+                                    if (eventViewModal) hideCustomModal(eventViewModal);
+                                    location.reload(); // Перезагружаем для обновления каруселей
+                                })
+                                .catch(err => alert("Ошибка удаления"));
+                        }
+                    };
+
+                    // Б. Обработчик ИЗМЕНЕНИЯ мероприятия
+                    editEvBtn.onclick = () => {
+                        if (eventViewModal) hideCustomModal(eventViewModal);
+
+                        const evModal = document.getElementById('add-event-modal');
+                        showCustomModal(evModal);
+
+                        // Перенастраиваем форму события под админский режим изменения
+                        evModal.querySelector('.modal-title').innerText = "Редактирование мероприятия";
+                        evModal.querySelector('.action-btn').innerText = "Сохранить изменения";
+
+                        // Записываем скрытый ID
+                        document.getElementById('edit-event-id').value = ev.eventId;
+
+                        // Заполняем поля текущими данными
+                        document.getElementById('event-title').value = ev.title;
+                        document.getElementById('event-description').value = ev.description;
+                        document.getElementById('event-start').value = ev.startDate.substring(0, 16); // Форматируем под datetime-local
+                        document.getElementById('event-end').value = ev.endDate.substring(0, 16);
+                        document.getElementById('event-location').value = ev.location || '';
+                        document.getElementById('event-contacts').value = ev.coordinatorContacts || '';
+                    };
+
+                } else {
+                    if (editEvBtn) editEvBtn.style.display = 'none';
+                    if (deleteEvBtn) deleteEvBtn.style.display = 'none';
+                }
+            }
+
             showCustomModal(eventViewModal);
-            document.body.style.overflow = 'hidden'; // Блокируем скролл страницы
+            document.body.style.overflow = 'hidden';
         }
 
-        // Обработчик закрытия детального просмотра мероприятия
         if (closeEventViewBtn) {
-            closeEventViewBtn.onclick = function() {
+            closeEventViewBtn.onclick = function () {
                 if (eventViewModal) hideCustomModal(eventViewModal);
-                
-                // При закрытии карточки события КРИТИЧНО плавно вернуть пользователя назад на карточку волонтерского центра
+                if (adminEventPanel) adminEventPanel.style.display = 'none';
+
                 const centerModal = document.getElementById('modal-overlay');
                 if (centerModal) {
                     centerModal.style.display = 'flex';
@@ -2331,10 +2387,15 @@ path:hover {
                     return;
                 }
 
-                // Вытаскиваем ID текущего открытого волонтерского центра
                 const centerId = currentActiveCenter.centerId || currentActiveCenter.CenterId || currentActiveCenter.id;
 
-                // Создаем объект FormData вместо обычного JSON, чтобы прикрепить файл
+                // Получаем значение флага редактирования
+                const editEventIdField = document.getElementById('edit-event-id');
+                const editEventId = editEventIdField ? editEventIdField.value : "";
+
+                console.log("Отправка формы мероприятия. Текущий флаг editEventId =", editEventId);
+
+                // Собираем FormData для отправки бинарных файлов с ПК
                 const formData = new FormData();
                 formData.append('centerId', centerId);
                 formData.append('userId', currentUser.userId);
@@ -2345,28 +2406,52 @@ path:hover {
                 formData.append('location', document.getElementById('event-location').value);
                 formData.append('coordinatorContacts', document.getElementById('event-contacts').value);
 
-                // Прикрепляем бинарный файл с ПК (если он выбран)
                 const fileInput = document.getElementById('event-image-file');
                 if (fileInput && fileInput.files.length > 0) {
                     formData.append('imageFile', fileInput.files[0]);
                 }
 
-                fetch('/api/events/apply', {
-                    method: 'POST',
-                    body: formData // Обрати внимание: заголовки Content-Type указывать НЕ надо, браузер поставит их сам!
+                // ЖЕСТКАЯ МАРШРУТИЗАЦИЯ
+                let url = '/api/events/apply';
+                let method = 'POST';
+
+                // Если флаг заполнен и это НЕ пустая строка — принудительно переключаем на ПРЯМОЕ ОБНОВЛЕНИЕ
+                if (editEventId && editEventId !== "") {
+                    console.log("Сработало условие: Прямое изменение утвержденного мероприятия в БД. ID =", editEventId);
+                    url = `/api/events/update/${editEventId}`;
+                    method = 'PUT';
+                    formData.append('eventId', editEventId);
+                }
+
+                fetch(url, {
+                    method: method,
+                    body: formData
                 })
                     .then(async response => {
-                        if (!response.ok) throw new Error('Не удалось отправить мероприятие на модерацию.');
+                        if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
                         return response.json();
                     })
                     .then(data => {
                         alert(data.message);
-                        eventForm.reset(); // Сбрасываем форму
-                        hideCustomModal(addEventModal);
+                        eventForm.reset();
 
-                        // Возвращаем пользователя в карточку центра и обновляем список
-                        document.getElementById('modal-overlay').style.display = 'flex';
-                        loadCenterEvents(centerId);
+                        // Очищаем скрытый идентификатор
+                        if (document.getElementById('edit-event-id')) {
+                            document.getElementById('edit-event-id').value = "";
+                        }
+
+                        hideCustomModal(document.getElementById('add-event-modal'));
+
+                        // ИСПРАВЛЕНО: Если мы правили уже существующее мероприятие, принудительно обновляем страницу
+                        if (editEventId && editEventId !== "") {
+                            console.log("Перезагрузка страницы для фиксации изменений в каруселях...");
+                            location.reload();
+                        } else {
+                            // Если это была обычная заявка пользователя — возвращаем его на карточку центра
+                            const centerModal = document.getElementById('modal-overlay');
+                            if (centerModal) centerModal.style.display = 'flex';
+                            loadCenterEvents(centerId);
+                        }
                     })
                     .catch(err => alert(err.message));
             });
