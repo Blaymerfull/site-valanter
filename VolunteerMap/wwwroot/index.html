@@ -846,6 +846,111 @@ path:hover {
     from { transform: translateY(50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+        /* ====================================
+           СТИЛИ КАСТОМНЫХ ДИАЛОГОВ (alert/confirm)
+           ==================================== */
+        .custom-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-dialog-box {
+            background: #141414;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 35px 30px 25px 30px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            animation: dialogSlideUp 0.3s ease;
+        }
+
+        @keyframes dialogSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .custom-dialog-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .custom-dialog-message {
+            font-size: 1em;
+            line-height: 1.5;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+
+        .custom-dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .custom-dialog-btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .custom-dialog-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .custom-dialog-btn.primary {
+            background: #e50914;
+            color: white;
+        }
+
+        .custom-dialog-btn.primary:hover {
+            background: #b20710;
+        }
+
+        .custom-dialog-btn.success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .custom-dialog-btn.success:hover {
+            background: #27ae60;
+        }
+
+        .custom-dialog-btn.cancel {
+            background: #333;
+            color: #ccc;
+        }
+
+        .custom-dialog-btn.cancel:hover {
+            background: #444;
+            color: white;
+        }
+
+        .custom-dialog-btn.danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .custom-dialog-btn.danger:hover {
+            background: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -1099,7 +1204,96 @@ path:hover {
     </div>
     </div>
 
+    <!-- ==========================================
+         КАСТОМНЫЙ ALERT (уведомление с кнопкой OK)
+         ========================================== -->
+    <div id="custom-alert-overlay" class="custom-dialog-overlay">
+        <div class="custom-dialog-box">
+            <div class="custom-dialog-title">Уведомление</div>
+            <div class="custom-dialog-message" id="custom-alert-message"></div>
+            <div class="custom-dialog-buttons">
+                <button class="custom-dialog-btn primary" id="custom-alert-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         КАСТОМНЫЙ CONFIRM (подтверждение с Да/Нет)
+         ========================================== -->
+    <div id="custom-confirm-overlay" class="custom-dialog-overlay">
+        <div class="custom-dialog-box">
+            <div class="custom-dialog-title">Подтверждение</div>
+            <div class="custom-dialog-message" id="custom-confirm-message"></div>
+            <div class="custom-dialog-buttons">
+                <button class="custom-dialog-btn cancel" id="custom-confirm-no-btn">Отмена</button>
+                <button class="custom-dialog-btn primary" id="custom-confirm-yes-btn">Да</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ==========================================
+        // КАСТОМНЫЕ ДИАЛОГИ (alert / confirm)
+        // ==========================================
+        const customAlertOverlay = document.getElementById('custom-alert-overlay');
+        const customAlertMessage = document.getElementById('custom-alert-message');
+        const customAlertOkBtn = document.getElementById('custom-alert-ok-btn');
+
+        const customConfirmOverlay = document.getElementById('custom-confirm-overlay');
+        const customConfirmMessage = document.getElementById('custom-confirm-message');
+        const customConfirmYesBtn = document.getElementById('custom-confirm-yes-btn');
+        const customConfirmNoBtn = document.getElementById('custom-confirm-no-btn');
+
+        function showCustomAlert(message) {
+            return new Promise((resolve) => {
+                customAlertMessage.textContent = message;
+                customAlertOverlay.style.display = 'flex';
+                setTimeout(() => customAlertOverlay.style.opacity = '1', 10);
+
+                const handleOk = () => {
+                    customAlertOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        customAlertOverlay.style.display = 'none';
+                        customAlertOkBtn.removeEventListener('click', handleOk);
+                        resolve();
+                    }, 300);
+                };
+
+                customAlertOkBtn.addEventListener('click', handleOk);
+            });
+        }
+
+        function showCustomConfirm(message) {
+            return new Promise((resolve) => {
+                customConfirmMessage.textContent = message;
+                customConfirmOverlay.style.display = 'flex';
+                setTimeout(() => customConfirmOverlay.style.opacity = '1', 10);
+
+                const handleYes = () => {
+                    customConfirmOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        customConfirmOverlay.style.display = 'none';
+                        customConfirmYesBtn.removeEventListener('click', handleYes);
+                        customConfirmNoBtn.removeEventListener('click', handleNo);
+                        resolve(true);
+                    }, 300);
+                };
+
+                const handleNo = () => {
+                    customConfirmOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        customConfirmOverlay.style.display = 'none';
+                        customConfirmYesBtn.removeEventListener('click', handleYes);
+                        customConfirmNoBtn.removeEventListener('click', handleNo);
+                        resolve(false);
+                    }, 300);
+                };
+
+                customConfirmYesBtn.addEventListener('click', handleYes);
+                customConfirmNoBtn.addEventListener('click', handleNo);
+            });
+        }
+
         const wrapper = document.getElementById('map-wrapper');
         const tooltip = document.getElementById('tooltip');
         const backBtn = document.getElementById('back-button');
@@ -1231,7 +1425,7 @@ path:hover {
 
                 const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
                 if (!currentUser) {
-                    alert("Ошибка сессии. Перезайдите в аккаунт.");
+                    showCustomAlert("Ошибка сессии. Перезайдите в аккаунт.");
                     return;
                 }
 
@@ -1292,8 +1486,8 @@ path:hover {
                         if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
                         return response.json();
                     })
-                    .then(data => {
-                        alert(data.message);
+                    .then(async data => {
+                        await showCustomAlert(data.message);
                         appForm.reset();
 
                         // Сбрасываем все скрытые поля и селекторы в исходное состояние
@@ -1317,7 +1511,7 @@ path:hover {
                             loadPendingApplications();
                         }
                     })
-                    .catch(err => alert(err.message));
+                    .catch(async err => await showCustomAlert(err.message));
             });
         }
 
@@ -1359,16 +1553,17 @@ path:hover {
         }
 
         // В. Функция одобрения / отклонения
-        window.moderateApp = function (id, action) {
-            if (!confirm(`Вы уверены, что хотите ${action === 'approve' ? 'одобрить' : 'отклонить'} эту заявку?`)) return;
+        window.moderateApp = async function (id, action) {
+            const confirmed = await showCustomConfirm(`Вы уверены, что хотите ${action === 'approve' ? 'одобрить' : 'отклонить'} эту заявку?`);
+            if (!confirmed) return;
 
             fetch(`/api/applications/${action}/${id}`, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
+                .then(async res => {
+                    const data = await res.json();
+                    await showCustomAlert(data.message);
                     loadPendingApplications(); // Перезагружаем список
                 })
-                .catch(err => alert("Ошибка при обработке действия."));
+                .catch(async err => await showCustomAlert("Ошибка при обработке действия."));
         };
 
         // Функция открытия формы для редактирования заявки админом
@@ -1541,7 +1736,7 @@ path:hover {
                 const confirmPassword = document.getElementById('register-confirm-password').value;
 
                 if (password !== confirmPassword) {
-                    alert("Пароли не совпадают!");
+                    showCustomAlert("Пароли не совпадают!");
                     return;
                 }
 
@@ -1555,12 +1750,12 @@ path:hover {
                         if (!response.ok) throw new Error(data.message || 'Ошибка регистрации');
                         return data;
                     })
-                    .then(data => {
-                        alert(data.message);
+                    .then(async data => {
+                        await showCustomAlert(data.message);
                         // Переключаем на окно входа
                         if (toLoginBtn) toLoginBtn.click();
                     })
-                    .catch(err => alert(err.message));
+                    .catch(async err => await showCustomAlert(err.message));
             });
         }
 
@@ -1582,8 +1777,8 @@ path:hover {
                         if (!response.ok) throw new Error(data.message || 'Неверный логин или пароль');
                         return data;
                     })
-                    .then(data => {
-                        alert(data.message);
+                    .then(async data => {
+                        await showCustomAlert(data.message);
                         // Сохраняем пользователя в локальное хранилище браузера
                         localStorage.setItem('volunteer_user', JSON.stringify({
                             email: data.email,
@@ -1594,7 +1789,7 @@ path:hover {
                         hideCustomModal(authModal);
                         checkUserAuth(); // Обновляем кнопки на главной
                     })
-                    .catch(err => alert(err.message));
+                    .catch(async err => await showCustomAlert(err.message));
             });
         }
 
@@ -1630,7 +1825,7 @@ path:hover {
 
                 const addCenterModal = document.getElementById('add-center-modal');
                 if (!addCenterModal) {
-                    alert("Ошибка: Элемент #add-center-modal не найден на странице!");
+                    showCustomAlert("Ошибка: Элемент #add-center-modal не найден на странице!");
                     return;
                 }
 
@@ -2029,27 +2224,28 @@ path:hover {
 
                     // 1. НАВЕШИВАЕМ ЛОГИКУ НА КНОПКУ "УДАЛИТЬ"
                     if (deleteBtn) {
-                        deleteBtn.onclick = () => {
+                        deleteBtn.onclick = async () => {
                             if (!cId) {
-                                alert("Ошибка: Не удалось определить ID центра для удаления.");
+                                await showCustomAlert("Ошибка: Не удалось определить ID центра для удаления.");
                                 return;
                             }
-                            if (confirm(`Вы уверены, что хотите НАВСЕГДА удалить центр "${cName}" из системы?`)) {
-                                fetch(`/api/map/delete-center/${cId}`, { method: 'DELETE' })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        alert(data.message);
-                                        document.getElementById('close-modal').click();
-                                        location.reload();
-                                    })
-                                    .catch(err => alert("Ошибка при удалении центра"));
-                            }
+                            const confirmed = await showCustomConfirm(`Вы уверены, что хотите НАВСЕГДА удалить центр "${cName}" из системы?`);
+                            if (!confirmed) return;
+
+                            fetch(`/api/map/delete-center/${cId}`, { method: 'DELETE' })
+                                .then(async res => {
+                                    const data = await res.json();
+                                    await showCustomAlert(data.message);
+                                    document.getElementById('close-modal').click();
+                                    location.reload();
+                                })
+                                .catch(async err => await showCustomAlert("Ошибка при удалении центра"));
                         };
                     }
 
                     // 2. НАВЕШИВАЕМ ЛОГИКУ НА КНОПКУ "ИЗМЕНИТЬ"
                     if (editBtn) {
-                        editBtn.onclick = () => {
+                        editBtn.onclick = async () => {
                             console.log("Админ нажал Изменить. Начинаем точечное заполнение формы...");
 
                             // Скрываем и гасим карточку, чтобы освободить экран для формы
@@ -2059,7 +2255,7 @@ path:hover {
 
                             const addModal = document.getElementById('add-center-modal');
                             if (!addModal) {
-                                alert("Критическая ошибка: Элемент #add-center-modal не найден на странице!");
+                                await showCustomAlert("Критическая ошибка: Элемент #add-center-modal не найден на странице!");
                                 return;
                             }
 
@@ -2308,17 +2504,18 @@ path:hover {
                     if (deleteEvBtn) deleteEvBtn.style.display = 'block';
 
                     // А. Обработчик УДАЛЕНИЯ мероприятия
-                    deleteEvBtn.onclick = () => {
-                        if (confirm(`Вы уверены, что хотите НАВСЕГДА удалить мероприятие "${ev.title}"?`)) {
-                            fetch(`/api/events/delete/${ev.eventId}`, { method: 'DELETE' })
-                                .then(res => res.json())
-                                .then(data => {
-                                    alert(data.message);
-                                    if (eventViewModal) hideCustomModal(eventViewModal);
-                                    location.reload(); // Перезагружаем для обновления каруселей
-                                })
-                                .catch(err => alert("Ошибка удаления"));
-                        }
+                    deleteEvBtn.onclick = async () => {
+                        const confirmed = await showCustomConfirm(`Вы уверены, что хотите НАВСЕГДА удалить мероприятие "${ev.title}"?`);
+                        if (!confirmed) return;
+
+                        fetch(`/api/events/delete/${ev.eventId}`, { method: 'DELETE' })
+                            .then(async res => {
+                                const data = await res.json();
+                                await showCustomAlert(data.message);
+                                if (eventViewModal) hideCustomModal(eventViewModal);
+                                location.reload(); // Перезагружаем для обновления каруселей
+                            })
+                            .catch(async err => await showCustomAlert("Ошибка удаления"));
                     };
 
                     // Б. Обработчик ИЗМЕНЕНИЯ мероприятия
@@ -2400,7 +2597,7 @@ path:hover {
                 // Проверяем сессию пользователя перед тем, как дать заполнить форму
                 const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
                 if (!currentUser) {
-                    alert("Чтобы предложить мероприятие, необходимо войти в Личный кабинет!");
+                    showCustomAlert("Чтобы предложить мероприятие, необходимо войти в Личный кабинет!");
                     return;
                 }
 
@@ -2430,7 +2627,7 @@ path:hover {
 
                 const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
                 if (!currentUser || !currentActiveCenter) {
-                    alert("Ошибка сессии. Перезайдите в систему.");
+                    showCustomAlert("Ошибка сессии. Перезайдите в систему.");
                     return;
                 }
 
@@ -2478,8 +2675,8 @@ path:hover {
                         if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
                         return response.json();
                     })
-                    .then(data => {
-                        alert(data.message);
+                    .then(async data => {
+                        await showCustomAlert(data.message);
                         eventForm.reset();
 
                         // Очищаем скрытый идентификатор
@@ -2500,7 +2697,7 @@ path:hover {
                             loadCenterEvents(centerId);
                         }
                     })
-                    .catch(err => alert(err.message));
+                    .catch(async err => await showCustomAlert(err.message));
             });
         }
         // =======================================================
@@ -2576,20 +2773,19 @@ path:hover {
         }
 
         // Функция одобрения / отклонения мероприятия админом
-        window.moderateEvent = function (id, action) {
+        window.moderateEvent = async function (id, action) {
             const actionText = action === 'approve' ? 'одобрить' : 'отклонить';
-            if (!confirm(`Вы уверены, что хотите ${actionText} это мероприятие?`)) return;
+            const confirmed = await showCustomConfirm(`Вы уверены, что хотите ${actionText} это мероприятие?`);
+            if (!confirmed) return;
 
             fetch(`/api/events/${action}/${id}`, { method: 'POST' })
-                .then(res => {
+                .then(async res => {
                     if (!res.ok) throw new Error('Ошибка обработки на сервере.');
-                    return res.json();
-                })
-                .then(data => {
-                    alert(data.message);
+                    const data = await res.json();
+                    await showCustomAlert(data.message);
                     loadPendingEventApplications(); // Обновляем текущий список вкладок
                 })
-                .catch(err => alert(err.message));
+                .catch(async err => await showCustomAlert(err.message));
         };
 
     </script>
