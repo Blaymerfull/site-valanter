@@ -703,31 +703,33 @@ path:hover {
     pointer-events: auto !important;
 }
 
-#regional-map-container svg path, #map-wrapper svg path {
-    pointer-events: auto !important;
-    cursor: pointer;
-}
+        #regional-map-container svg path, #map-wrapper svg path {
+            pointer-events: auto !important;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+            will-change: opacity;
+        }
 
 .hidden-completely {
     display: none !important;
 }
 
-#centers-view {
-     position: fixed; /* Фиксируем на весь экран поверх карты */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10;
-    
-    /* ВКЛЮЧАЕМ СВЕРХУ ПАДДИНГ, чтобы карточки не залезали под поиск
-    padding-top: 140px; */
-    
-    /* РАЗРЕШАЕМ СКРОЛЛ только внутри этого контейнера */
-    overflow-y: auto; 
-    box-sizing: border-box;
-    background-color: #050505; /* Задаем фон, чтобы карта сзади не просвечивала */
-}
+        #centers-view {
+            position: fixed; /* Фиксируем на весь экран поверх карты */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+                        /* ВКЛЮЧАЕМ СВЕРХУ ПАДДИНГ, чтобы карточки не залезали под поиск
+                            padding-top: 140px; */
+            /* РАЗРЕШАЕМ СКРОЛЛ только внутри этого контейнера */
+            overflow-y: auto;
+            box-sizing: border-box;
+            background-color: #050505; /* Задаем фон, чтобы карта сзади не просвечивала */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            will-change: opacity, transform;
+        }
 
 .centers-grid {
     display: grid;
@@ -747,6 +749,10 @@ path:hover {
     transform: translateY(30px);
     transition: transform 0.4s ease, background 0.4s ease, border-color 0.4s ease;
 }
+        #centers-view.fade-out {
+            opacity: 0 !important;
+            transform: scale(0.95); /* Эффект плавного отдаления карточек */
+        }
 
 .center-card.animate {
     animation: reveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -757,6 +763,17 @@ path:hover {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+@keyframes hide {
+    to {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+}
+
+.center-card.hide-animation {
+    animation: hide 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .center-card:hover {
@@ -2093,10 +2110,32 @@ path:hover {
             const centersView = document.getElementById('centers-view');
 
             if (centersView && centersView.style.display === 'block') {
-                centersView.style.display = 'none';
-                centersView.style.opacity = '0';
-                regionalContainer.style.display = 'block';
-                setTimeout(() => regionalContainer.style.opacity = '1', 50);
+                console.log("Плавный возврат от карточек к карте области...");
+
+                // 1. Запускаем плавное исчезновение карточек
+                centersView.classList.add('fade-out');
+                backBtn.classList.remove('visible'); // Гасим саму кнопку "Назад" на время анимации
+
+                setTimeout(() => {
+                    // 2. ФИЗИЧЕСКИ скрываем карточки после окончания анимации
+                    centersView.style.display = 'none';
+                    centersView.classList.remove('fade-out'); // Сбрасываем класс для следующего открытия
+
+                    // 3. Возвращаем карту области в DOM (пока невидимой)
+                    if (regionalContainer) {
+                        regionalContainer.style.display = 'block';
+                        regionalContainer.style.opacity = '0';
+                        regionalContainer.style.pointerEvents = 'auto';
+
+                        // 4. Плавно проявляем карту области
+                        setTimeout(() => {
+                            regionalContainer.style.opacity = '1';
+                            backBtn.classList.add('visible'); // Возвращаем кнопку "Назад"
+                            backBtn.style.opacity = '1';
+                        }, 50);
+                    }
+                }, 500); // 500мс — время анимации, строго совпадающее с CSS transition
+
                 return;
             }
 

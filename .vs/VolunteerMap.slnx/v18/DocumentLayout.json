@@ -1,17 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\",
+  "WorkspaceRootPath": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\volunteermap\\controllers\\eventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\volunteermap\\controllers\\eventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\eventscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\volunteermap\\models\\district.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\volunteermap\\models\\district.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\district.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -28,11 +28,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "index.html",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "VolunteerMap\\wwwroot\\index.html",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeToolTip": "VolunteerMap\\wwwroot\\index.html",
-              "ViewState": "AgIAANMKAAAAAAAAAAAAAOYKAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAMEEAAAAAAAAAAAAAFMIAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2026-05-10T12:14:11.441Z",
               "IsPinned": true,
@@ -42,9 +42,9 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "EventsController.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\Controllers\\EventsController.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\Controllers\\EventsController.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\EventsController.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\Controllers\\EventsController.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\Controllers\\EventsController.cs",
               "RelativeToolTip": "VolunteerMap\\Controllers\\EventsController.cs",
               "ViewState": "AgIAAI8AAAAAAAAAAAAAAKEAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -54,9 +54,9 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "District.cs",
-              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\Models\\District.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\Models\\District.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Models\\District.cs",
-              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v2\\site-valanter\\VolunteerMap\\Models\\District.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v3\\site-valanter\\VolunteerMap\\Models\\District.cs",
               "RelativeToolTip": "VolunteerMap\\Models\\District.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
