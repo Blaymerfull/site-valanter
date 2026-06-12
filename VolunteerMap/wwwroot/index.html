@@ -1671,9 +1671,33 @@ path:hover {
             closeAddModalBtn.onclick = function () {
                 console.log("Клик по крестику отмены формы. Анализируем состояние экрана...");
 
-                // 1. Находим и закрываем саму форму изменения
+                // 1. Сбрасываем форму центра в исходное состояние
                 const addCenterModal = document.getElementById('add-center-modal');
                 if (addCenterModal) {
+                    // Сбрасываем скрытые ID
+                    const editAppField = document.getElementById('edit-app-id');
+                    const editCenterField = document.getElementById('edit-center-id');
+                    if (editAppField) editAppField.value = "";
+                    if (editCenterField) editCenterField.value = "";
+
+                    // Возвращаем заголовки
+                    const modalTitle = addCenterModal.querySelector('.modal-title');
+                    if (modalTitle) modalTitle.innerText = "Подать заявку на создание центра";
+                    const submitBtn = addCenterModal.querySelector('button[type="submit"]') || addCenterModal.querySelector('.action-btn');
+                    if (submitBtn) submitBtn.innerText = "Отправить на модерацию";
+
+                    // Сбрасываем селекторы
+                    const appRegionSelect = document.getElementById('app-region');
+                    const appDistrictSelect = document.getElementById('app-district');
+                    if (appRegionSelect) appRegionSelect.value = "";
+                    if (appDistrictSelect) {
+                        appDistrictSelect.innerHTML = '<option value="" disabled selected>Сначала выберите регион</option>';
+                        appDistrictSelect.disabled = true;
+                    }
+
+                    // Очищаем форму
+                    if (appForm) appForm.reset();
+
                     hideCustomModal(addCenterModal);
                 }
 
@@ -2350,8 +2374,29 @@ path:hover {
         const addEventModal = document.getElementById('add-event-modal');
         const closeEventModalBtn = document.getElementById('close-event-modal-btn');
 
+        // Функция полного сброса формы мероприятия в исходное состояние
+        function resetEventForm() {
+            // Сбрасываем идентификатор редактирования
+            const editEvIdField = document.getElementById('edit-event-id');
+            if (editEvIdField) editEvIdField.value = "";
+
+            // Возвращаем заголовки формы
+            if (addEventModal) {
+                const modalTitle = addEventModal.querySelector('.modal-title');
+                if (modalTitle) modalTitle.innerText = "Предложить мероприятие";
+                const submitBtn = addEventModal.querySelector('button[type="submit"]') || addEventModal.querySelector('.action-btn');
+                if (submitBtn) submitBtn.innerText = "Отправить событие на модерацию";
+            }
+
+            // Очищаем поля формы
+            if (eventForm) eventForm.reset();
+        }
+
         if (addEventModalBtn) {
             addEventModalBtn.onclick = function () {
+                // Принудительно сбрасываем форму в исходное состояние (новое мероприятие)
+                resetEventForm();
+
                 // Проверяем сессию пользователя перед тем, как дать заполнить форму
                 const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
                 if (!currentUser) {
@@ -2367,6 +2412,8 @@ path:hover {
 
         if (closeEventModalBtn) {
             closeEventModalBtn.onclick = function () {
+                // Сбрасываем форму при закрытии, чтобы в следующий раз открылась чистая
+                resetEventForm();
                 hideCustomModal(addEventModal);
                 // При закрытии возвращаем пользователя обратно на карточку волонтерского центра
                 document.getElementById('modal-overlay').style.display = 'flex';
@@ -2473,7 +2520,7 @@ path:hover {
                 this.classList.add('active');
                 eventsAppsPanel.classList.remove('active');
                 centersAppsPanel.classList.add('active');
-                loadPendingApplications(); // Перезагружаем заявки на центры (твой старый метод)
+                loadPendingApplications(); // Перезагружаем заявки на центры
             });
 
             tabEventsBtn.addEventListener('click', function () {
