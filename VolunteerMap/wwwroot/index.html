@@ -1304,6 +1304,39 @@
         </div>
     </div>
 
+    <!-- НОВОЕ: Модальное окно личного кабинета -->
+    <div id="personal-account-modal" class="custom-modal-overlay">
+        <div class="custom-modal-content form-box" style="max-width: 900px;">
+            <span class="custom-close-modal" id="close-personal-account-btn">&times;</span>
+            <h2 class="modal-title">Личный кабинет</h2>
+
+            <div class="personal-account-info" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #333;">
+                <p style="font-size: 1.1em; color: #eee;">Email: <b id="account-email"></b></p>
+                <p style="font-size: 1.1em; color: #eee;">Роль: <b id="account-role"></b></p>
+            </div>
+
+            <!-- Вкладки для заявок пользователя -->
+            <div class="events-tabs" style="margin-bottom: 20px;">
+                <button class="tab-link active" id="tab-my-centers-btn">Мои заявки на центры</button>
+                <button class="tab-link" id="tab-my-events-btn">Мои заявки на мероприятия</button>
+            </div>
+
+            <!-- Контейнер для вывода списка заявок на центры -->
+            <div id="my-centers-apps-panel" class="tab-panel-content active" style="max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                <div id="my-centers-list-container">
+                    <p style="color:#aaa; text-align:center;">Загрузка ваших заявок на центры...</p>
+                </div>
+            </div>
+
+            <!-- Контейнер для вывода списка заявок на мероприятия -->
+            <div id="my-events-apps-panel" class="tab-panel-content" style="max-height: 50vh; overflow-y: auto; padding-right: 10px;">
+                <div id="my-events-list-container">
+                    <p style="color:#aaa; text-align:center;">Загрузка ваших заявок на мероприятия...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // КАСТОМНЫЕ ДИАЛОГИ (alert / confirm)
@@ -1768,8 +1801,8 @@
             const viewAppsBtn = document.getElementById('view-apps-btn'); // Кнопка админа
 
             if (currentUser) {
-                // Пользователь вошел в систему
-                if (accountBtn) accountBtn.style.display = 'none';
+                // Пользователь вошел в систему — показываем кнопку "Личный кабинет"
+                if (accountBtn) accountBtn.style.display = 'block';
                 if (logoutBtn) logoutBtn.style.display = 'block';
                 if (userEmailDisplay) {
                     userEmailDisplay.innerText = currentUser.email;
@@ -1784,7 +1817,7 @@
                     viewAppsBtn.style.display = 'none';
                 }
             } else {
-                // Пользователь НЕ вошел в систему
+                // Пользователь НЕ вошел в систему — кнопка "Личный кабинет" для входа
                 if (accountBtn) accountBtn.style.display = 'block';
                 if (logoutBtn) logoutBtn.style.display = 'none';
                 if (userEmailDisplay) {
@@ -1888,7 +1921,17 @@
             setTimeout(() => modal.style.display = 'none', 400);
         }
 
-        accountBtn.addEventListener('click', () => showCustomModal(authModal));
+        // Обработчик кнопки "Личный кабинет": если пользователь вошел — открываем ЛК, иначе — окно входа
+        accountBtn.addEventListener('click', function() {
+            const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+            if (currentUser) {
+                // Пользователь уже вошел — открываем личный кабинет
+                openPersonalAccount();
+            } else {
+                // Не вошел — показываем форму авторизации
+                showCustomModal(authModal);
+            }
+        });
         closeAuthBtn.addEventListener('click', () => hideCustomModal(authModal));
 
         if (addCenterBtn) {
@@ -2882,6 +2925,146 @@
                 })
                 .catch(async err => await showCustomAlert(err.message));
         };
+
+        // =======================================================
+        // ЛОГИКА ЛИЧНОГО КАБИНЕТА (ЗАЯВКИ ПОЛЬЗОВАТЕЛЯ)
+        // =======================================================
+        const tabMyCentersBtn = document.getElementById('tab-my-centers-btn');
+        const tabMyEventsBtn = document.getElementById('tab-my-events-btn');
+        const myCentersAppsPanel = document.getElementById('my-centers-apps-panel');
+        const myEventsAppsPanel = document.getElementById('my-events-apps-panel');
+        const myCentersListContainer = document.getElementById('my-centers-list-container');
+        const myEventsListContainer = document.getElementById('my-events-list-container');
+
+        // Логика переключения вкладок внутри личного кабинета
+        if (tabMyCentersBtn && tabMyEventsBtn) {
+            tabMyCentersBtn.addEventListener('click', function () {
+                tabMyEventsBtn.classList.remove('active');
+                this.classList.add('active');
+                myEventsAppsPanel.classList.remove('active');
+                myCentersAppsPanel.classList.add('active');
+                const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+                if (currentUser) loadUserApplications(currentUser.userId);
+            });
+
+            tabMyEventsBtn.addEventListener('click', function () {
+                tabMyCentersBtn.classList.remove('active');
+                this.classList.add('active');
+                myCentersAppsPanel.classList.remove('active');
+                myEventsAppsPanel.classList.add('active');
+                const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+                if (currentUser) loadUserEventApplications(currentUser.userId);
+            });
+        }
+
+        // Загрузка заявок пользователя на центры
+        function loadUserApplications(userId) {
+            if (!myCentersListContainer) return;
+            myCentersListContainer.innerHTML = '<p style="color:#aaa; text-align:center;">Загрузка ваших заявок на центры...</p>';
+
+            fetch(`/api/applications/user/${userId}`)
+                .then(res => res.json())
+                .then(apps => {
+                    myCentersListContainer.innerHTML = '';
+
+                    if (apps.length === 0) {
+                        myCentersListContainer.innerHTML = '<p style="color:#666; text-align:center; padding: 20px;">У вас нет активных заявок на центры.</p>';
+                        return;
+                    }
+
+                    apps.forEach(app => {
+                        const item = document.createElement('div');
+                        item.style = "background:#222; border:1px solid #333; padding:20px; margin-bottom:15px; border-radius:6px;";
+                        item.innerHTML = `
+                                <h3 style="color:#e50914; margin-top:0;">${app.name}</h3>
+                                <p style="font-size:0.9em; opacity:0.8;">${app.description || 'Без описания'}</p>
+                                <p style="font-size:0.85em;">📍 <b>Адрес:</b> ${app.address}</p>
+                                <p style="font-size:0.85em;">📞 <b>Контакты:</b> ${app.contacts}</p>
+                                ${app.imageUrl ? `<p style="font-size:0.85em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🖼️ <b>Ссылка на фото:</b> <a href="${app.imageUrl}" target="_blank" style="color:#aaa;">${app.imageUrl}</a></p>` : ''}
+                                <p style="font-size:0.85em;"><b>Статус:</b> ${app.status === 'Pending' ? 'На рассмотрении' : (app.status === 'Approved' ? 'Одобрено' : 'Отклонено')}</p>
+                            `;
+                        myCentersListContainer.appendChild(item);
+                    });
+                })
+                .catch(err => {
+                    console.error("Ошибка загрузки заявок пользователя на центры:", err);
+                    myCentersListContainer.innerHTML = '<p style="color:#e74c3c;">Не удалось загрузить ваши заявки на центры.</p>';
+                });
+        }
+
+        // Загрузка заявок пользователя на мероприятия
+        function loadUserEventApplications(userId) {
+            if (!myEventsListContainer) return;
+            myEventsListContainer.innerHTML = '<p style="color:#aaa; text-align:center;">Загрузка ваших заявок на мероприятия...</p>';
+
+            fetch(`/api/events/user-applications/${userId}`)
+                .then(res => res.json())
+                .then(apps => {
+                    myEventsListContainer.innerHTML = '';
+
+                    if (apps.length === 0) {
+                        myEventsListContainer.innerHTML = '<p style="color:#666; text-align:center; padding: 20px;">У вас нет активных заявок на мероприятия.</p>';
+                        return;
+                    }
+
+                    apps.forEach(app => {
+                        const item = document.createElement('div');
+                        item.style = "background:#222; border:1px solid #333; padding:20px; margin-bottom:15px; border-radius:6px;";
+
+                        const start = new Date(app.startDate).toLocaleString('ru-RU');
+                        const end = new Date(app.endDate).toLocaleString('ru-RU');
+
+                        item.innerHTML = `
+                                <h3 style="color:#e50914; margin-top:0;">${app.title}</h3>
+                                <p style="font-size:0.9em; opacity:0.8;">${app.description}</p>
+                                <p style="font-size:0.85em;">📅 <b>Сроки:</b> ${start} — ${end}</p>
+                                <p style="font-size:0.85em;">📍 <b>Место сбора:</b> ${app.location || 'Не указано'}</p>
+                                <p style="font-size:0.85em;">📞 <b>Контакты куратора:</b> ${app.coordinatorContacts || 'Не указаны'}</p>
+                                ${app.imageUrl ? `<p style="font-size:0.85em;">🖼️ <b>Обложка:</b> <a href="${app.imageUrl}" target="_blank" style="color:#aaa; text-decoration:underline;">Просмотреть загруженный файл</a></p>` : ''}
+                                <p style="font-size:0.85em;"><b>Статус:</b> ${app.status === 'Pending' ? 'На рассмотрении' : (app.status === 'Approved' ? 'Одобрено' : 'Отклонено')}</p>
+                            `;
+                        myEventsListContainer.appendChild(item);
+                    });
+                })
+                .catch(err => {
+                    console.error("Ошибка при загрузке заявок пользователя на события:", err);
+                    myEventsListContainer.innerHTML = '<p style="color:#e74c3c;">Не удалось загрузить ваши заявки на мероприятия.</p>';
+                });
+        }
+
+        // Функция открытия личного кабинета
+        function openPersonalAccount() {
+            const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+            if (!currentUser) {
+                showCustomAlert("Необходимо войти в систему.");
+                return;
+            }
+
+            const personalAccountModal = document.getElementById('personal-account-modal');
+            if (!personalAccountModal) return;
+
+            // Заполняем информацию о пользователе
+            const accountEmail = document.getElementById('account-email');
+            const accountRole = document.getElementById('account-role');
+            if (accountEmail) accountEmail.innerText = currentUser.email;
+            if (accountRole) accountRole.innerText = currentUser.role === 'Admin' ? 'Администратор' : 'Пользователь';
+
+            // Загружаем заявки пользователя
+            loadUserApplications(currentUser.userId);
+            loadUserEventApplications(currentUser.userId);
+
+            // Показываем модальное окно
+            showCustomModal(personalAccountModal);
+        }
+
+        // Обработчик закрытия личного кабинета
+        const closePersonalAccountBtn = document.getElementById('close-personal-account-btn');
+        if (closePersonalAccountBtn) {
+            closePersonalAccountBtn.addEventListener('click', () => {
+                const personalAccountModal = document.getElementById('personal-account-modal');
+                if (personalAccountModal) hideCustomModal(personalAccountModal);
+            });
+        }
 
     </script>
 </body>

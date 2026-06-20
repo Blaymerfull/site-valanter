@@ -79,6 +79,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "GetUserApplications",
+    "RelativePath": "api/Applications/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "VolunteerMap.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
@@ -297,6 +313,22 @@
         "Name": "ImageFile",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.EventsController",
+    "Method": "GetUserEventApplications",
+    "RelativePath": "api/Events/user-applications/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

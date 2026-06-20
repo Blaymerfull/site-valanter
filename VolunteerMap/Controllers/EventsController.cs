@@ -165,7 +165,19 @@ namespace VolunteerMap.Controllers
             return Ok(new { message = "Мероприятие успешно удалено из системы!" });
         }
 
-        // 7. ИЗМЕНЕНИЕ СУЩЕСТВУЮЩЕГО МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (PUT: api/events/update/{id})
+        // 7. ПОЛУЧЕНИЕ ЗАЯВОК ПОЛЬЗОВАТЕЛЯ НА МЕРОПРИЯТИЯ (GET: api/events/user-applications/{userId})
+        [HttpGet("user-applications/{userId}")]
+        public async Task<IActionResult> GetUserEventApplications(int userId)
+        {
+            var apps = await _context.EventApplications
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
+
+            return Ok(apps);
+        }
+
+        // 8. ИЗМЕНЕНИЕ СУЩЕСТВУЮЩЕГО МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (PUT: api/events/update/{id})
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromForm] EventApplicationForm form)
         {

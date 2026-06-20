@@ -94,13 +94,25 @@ namespace VolunteerMap.Controllers
             app.Status = "Rejected";
 
             // Если нужно физически удалить строчку из БД:
-            _context.VolunteerApplications.Remove(app);
+            //_context.VolunteerApplications.Remove(app);
 
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Заявка отклонена и удалена из списка." });
         }
-        // 5. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
+        // 5. ПОЛУЧЕНИЕ ЗАЯВОК ПОЛЬЗОВАТЕЛЯ НА ЦЕНТРЫ (GET: api/applications/user/{userId})
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetUserApplications(int userId)
+        {
+            var apps = await _context.VolunteerApplications
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
+
+            return Ok(apps);
+        }
+
+        // 6. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateApplication(int id, [FromBody] VolunteerApplication updatedApp)
         {
