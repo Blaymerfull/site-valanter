@@ -159,6 +159,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "ChatController",
+    "Method": "GetChatHistory",
+    "RelativePath": "api/chat/history/{centerId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "centerId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "VolunteerMap.Controllers.EventsController",
     "Method": "ApplyEvent",
     "RelativePath": "api/Events/apply",

@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\volunteermap\\models\\region.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\models\\region.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\volunteermap\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|c:\\users\\blaym\\desktop\\\u0434\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{52076995-5D0A-F6B1-696A-19776A3512F7}|VolunteerMap\\VolunteerMap.csproj|solutionrelative:volunteermap\\wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -34,21 +42,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "VolunteerMap\\wwwroot\\index.html",
               "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\wwwroot\\index.html",
               "RelativeToolTip": "VolunteerMap\\wwwroot\\index.html",
-              "ViewState": "AgIAANoEAAAAAAAAAAAAAPkEAAC/AAAAAAAAAA==",
+              "ViewState": "AgIAAJgEAAAAAAAAAAAAALIEAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2026-05-10T12:14:11.441Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -56,7 +63,32 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Region.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Models\\Region.cs",
+              "RelativeDocumentMoniker": "VolunteerMap\\Models\\Region.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Models\\Region.cs",
+              "RelativeToolTip": "VolunteerMap\\Models\\Region.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-21T15:46:37.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ChatController.cs",
+              "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Controllers\\ChatController.cs",
+              "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\ChatController.cs",
+              "ToolTip": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Controllers\\ChatController.cs",
+              "RelativeToolTip": "VolunteerMap\\Controllers\\ChatController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-21T09:59:26.199Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "ApplicationsController.cs",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Controllers\\ApplicationsController.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\ApplicationsController.cs",
@@ -64,12 +96,11 @@
               "RelativeToolTip": "VolunteerMap\\Controllers\\ApplicationsController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-19T05:52:35.239Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-19T05:52:35.239Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Program.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Program.cs",
@@ -81,7 +112,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\appsettings.json",
               "RelativeDocumentMoniker": "VolunteerMap\\appsettings.json",
@@ -93,7 +124,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "EventsController.cs",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Controllers\\EventsController.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Controllers\\EventsController.cs",
@@ -105,7 +136,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "District.cs",
               "DocumentMoniker": "C:\\Users\\Blaym\\Desktop\\\u0414\u0438\u043F\u043B\u043E\u043C\\v5\\site-valanter\\VolunteerMap\\Models\\District.cs",
               "RelativeDocumentMoniker": "VolunteerMap\\Models\\District.cs",

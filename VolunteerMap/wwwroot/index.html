@@ -1029,9 +1029,170 @@
                     color: white;
                 }
 
-                    .custom-dialog-btn.danger:hover {
-                        background: #c0392b;
-                    }
+                .custom-dialog-btn.danger:hover {
+                    background: #c0392b;
+                }
+
+            /* ====================================
+               СТИЛИ ЧАТА ВОЛОНТЕРСКОГО ЦЕНТРА
+               ==================================== */
+            .chat-modal-content {
+                max-width: 500px;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                padding: 0;
+                overflow: hidden;
+                height: 70vh;
+                max-height: 600px;
+            }
+
+            .chat-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px 25px;
+                border-bottom: 1px solid #333;
+                background: #141414;
+                flex-shrink: 0;
+            }
+
+            .chat-header h2 {
+                margin: 0;
+                font-size: 1.3em;
+                color: white;
+            }
+
+            .chat-close-btn {
+                font-size: 28px;
+                color: #aaa;
+                cursor: pointer;
+                transition: color 0.3s;
+                line-height: 1;
+            }
+
+            .chat-close-btn:hover {
+                color: #e50914;
+            }
+
+            .chat-messages {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px 25px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                background: #0f0f0f;
+            }
+
+            .chat-messages::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .chat-messages::-webkit-scrollbar-track {
+                background: #141414;
+            }
+
+            .chat-messages::-webkit-scrollbar-thumb {
+                background: #333;
+                border-radius: 3px;
+            }
+
+            .chat-messages::-webkit-scrollbar-thumb:hover {
+                background: #444;
+            }
+
+            .chat-message {
+                max-width: 80%;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 0.9em;
+                line-height: 1.4;
+                word-wrap: break-word;
+            }
+
+            .chat-message.own {
+                align-self: flex-end;
+                background: #e50914;
+                color: white;
+                border-bottom-right-radius: 2px;
+            }
+
+            .chat-message.other {
+                align-self: flex-start;
+                background: #222;
+                color: #eee;
+                border-bottom-left-radius: 2px;
+            }
+
+            .chat-message .msg-email {
+                font-size: 0.75em;
+                opacity: 0.7;
+                margin-bottom: 4px;
+                display: block;
+            }
+
+            .chat-message .msg-time {
+                font-size: 0.7em;
+                opacity: 0.5;
+                margin-top: 4px;
+                display: block;
+                text-align: right;
+            }
+
+            .chat-input-area {
+                display: flex;
+                gap: 10px;
+                padding: 15px 25px;
+                border-top: 1px solid #333;
+                background: #141414;
+                flex-shrink: 0;
+            }
+
+            .chat-input-area input {
+                flex: 1;
+                padding: 12px 15px;
+                background: #222;
+                border: 1px solid #333;
+                border-radius: 4px;
+                color: white;
+                font-size: 0.95em;
+                outline: none;
+                transition: border-color 0.3s;
+                box-sizing: border-box;
+            }
+
+            .chat-input-area input:focus {
+                border-color: #e50914;
+            }
+
+            .chat-input-area input::placeholder {
+                color: #666;
+            }
+
+            .chat-send-btn {
+                padding: 12px 20px;
+                background: #e50914;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 0.95em;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background 0.2s;
+                white-space: nowrap;
+            }
+
+            .chat-send-btn:hover {
+                background: #b20710;
+            }
+
+            .chat-empty {
+                text-align: center;
+                color: #555;
+                font-size: 0.9em;
+                padding: 40px 0;
+            }
     </style>
 </head>
 <body>
@@ -1206,7 +1367,10 @@
             <div class="center-events-section" style="padding: 0 40px 40px 40px; background: #141414;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #333; padding-top: 30px; margin-bottom: 20px;">
                     <h2 style="color: white; margin: 0;">Мероприятия центра</h2>
-                    <button id="add-event-modal-btn" class="nav-btn" style="margin: 0; background: #333;">Предложить мероприятие</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="add-event-modal-btn" class="nav-btn" style="margin: 0; background: #333;">Предложить мероприятие</button>
+                        <button id="open-center-chat-btn" class="nav-btn" style="margin: 0; background: #333; display: none;">Чат центра</button>
+                    </div>
                 </div>
 
                 <!-- Табы / Вкладки для переключения текущих и прошедших событий -->
@@ -1383,6 +1547,28 @@
 
     </div>
 </div>
+
+    <!-- ==========================================
+         МОДАЛЬНОЕ ОКНО ЧАТА ВОЛОНТЕРСКОГО ЦЕНТРА
+         ========================================== -->
+    <div id="center-chat-modal" class="custom-modal-overlay" style="z-index: 400000;">
+        <div class="custom-modal-content chat-modal-content">
+            <div class="chat-header">
+                <h2>Чат центра</h2>
+                <span class="chat-close-btn" id="close-chat-btn">&times;</span>
+            </div>
+            <div class="chat-messages" id="chat-messages-container">
+                <div class="chat-empty">Загрузка истории сообщений...</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Введите сообщение..." maxlength="500">
+                <button class="chat-send-btn" id="chat-send-btn">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключение SignalR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
 
     <script>
         // ==========================================
@@ -2398,8 +2584,18 @@
                     </div>
                 `;
 
-            // ПРОВЕРКА РОЛИ ПОЛЬЗОВАТЕЛЯ ДЛЯ УПРАВЛЕНИЯ ПАНЕЛЬЮ
+            // Показываем кнопку чата для авторизованных пользователей
+            const chatBtn = document.getElementById('open-center-chat-btn');
             const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+            if (chatBtn) {
+                if (currentUser) {
+                    chatBtn.style.display = 'block';
+                } else {
+                    chatBtn.style.display = 'none';
+                }
+            }
+
+            // ПРОВЕРКА РОЛИ ПОЛЬЗОВАТЕЛЯ ДЛЯ УПРАВЛЕНИЯ ПАНЕЛЬЮ
 
             if (adminPanel) {
                 // Панель включаем ВСЕГДА, так как внутри неё теперь лежит крестик закрытия
@@ -3355,6 +3551,211 @@
                 mainTabProfileBtn.classList.remove('active');
                 mainProfilePanel.style.display = 'none';
                 mainSecurityPanel.style.display = 'block';
+            });
+        }
+
+        // ==========================================
+        // ЛОГИКА ЧАТА ВОЛОНТЕРСКОГО ЦЕНТРА (SignalR)
+        // ==========================================
+
+        // Глобальные переменные чата
+        let chatConnection = null;
+        let currentChatCenterId = null;
+
+        // Элементы чата
+        const chatModal = document.getElementById('center-chat-modal');
+        const chatCloseBtn = document.getElementById('close-chat-btn');
+        const chatMessagesContainer = document.getElementById('chat-messages-container');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const openChatBtn = document.getElementById('open-center-chat-btn');
+
+        // Инициализация SignalR соединения
+        function initChatConnection() {
+            if (chatConnection && chatConnection.state === 'Connected') {
+                return Promise.resolve();
+            }
+
+            const currentUserForChat = JSON.parse(localStorage.getItem('volunteer_user'));
+            const emailParam = currentUserForChat ? encodeURIComponent(currentUserForChat.email) : 'unknown';
+
+            chatConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub?email=" + emailParam)
+                .withAutomaticReconnect()
+                .build();
+
+            // Обработчик получения нового сообщения
+            chatConnection.on("ReceiveMessage", function (message) {
+                addChatMessage(message.userEmail, message.messageText, message.time);
+            });
+
+            // Обработчики переподключения
+            chatConnection.onreconnecting(() => {
+                console.log("Чат: переподключение к серверу...");
+            });
+
+            chatConnection.onreconnected(() => {
+                console.log("Чат: переподключено!");
+                if (currentChatCenterId) {
+                    chatConnection.invoke("JoinCenterChat", currentChatCenterId.toString())
+                        .catch(err => console.error("Ошибка повторного входа в комнату:", err));
+                }
+            });
+
+            return chatConnection.start()
+                .then(() => console.log("Чат: соединение установлено"))
+                .catch(err => console.error("Ошибка подключения к чату:", err));
+        }
+
+        // Добавление сообщения в контейнер
+        function addChatMessage(email, text, time) {
+            const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+            const isOwn = currentUser && currentUser.email === email;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message' + (isOwn ? ' own' : ' other');
+
+            msgDiv.innerHTML = `
+                <span class="msg-email">${isOwn ? 'Вы' : email}</span>
+                ${text}
+                <span class="msg-time">${time}</span>
+            `;
+
+            chatMessagesContainer.appendChild(msgDiv);
+
+            // Автоскролл вниз
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        // Загрузка истории сообщений
+        function loadChatHistory(centerId) {
+            chatMessagesContainer.innerHTML = '<div class="chat-empty">Загрузка истории сообщений...</div>';
+
+            fetch(`/api/chat/history/${centerId}`)
+                .then(res => res.json())
+                .then(messages => {
+                    chatMessagesContainer.innerHTML = '';
+
+                    if (messages.length === 0) {
+                        chatMessagesContainer.innerHTML = '<div class="chat-empty">История сообщений пуста. Напишите первое сообщение!</div>';
+                        return;
+                    }
+
+                    messages.forEach(msg => {
+                        addChatMessage(msg.userEmail, msg.messageText, msg.time);
+                    });
+                })
+                .catch(err => {
+                    console.error("Ошибка загрузки истории чата:", err);
+                    chatMessagesContainer.innerHTML = '<div class="chat-empty">Не удалось загрузить историю сообщений.</div>';
+                });
+        }
+
+        // Открытие чата
+        function openCenterChat() {
+            const currentUser = JSON.parse(localStorage.getItem('volunteer_user'));
+            if (!currentUser) {
+                showCustomAlert("Чтобы использовать чат, необходимо войти в систему.");
+                return;
+            }
+
+            if (!currentActiveCenter) {
+                showCustomAlert("Ошибка: центр не выбран.");
+                return;
+            }
+
+            const centerId = currentActiveCenter.centerId || currentActiveCenter.CenterId || currentActiveCenter.id;
+            if (!centerId) {
+                showCustomAlert("Ошибка: не удалось определить ID центра.");
+                return;
+            }
+
+            currentChatCenterId = centerId;
+
+            // Показываем модалку чата
+            showCustomModal(chatModal);
+
+            // Загружаем историю
+            loadChatHistory(centerId);
+
+            // Инициализируем SignalR и входим в комнату
+            initChatConnection().then(() => {
+                if (chatConnection && chatConnection.state === 'Connected') {
+                    chatConnection.invoke("JoinCenterChat", centerId.toString())
+                        .catch(err => console.error("Ошибка входа в комнату чата:", err));
+                }
+            });
+        }
+
+        // Отправка сообщения
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            if (!currentChatCenterId) {
+                showCustomAlert("Ошибка: чат не инициализирован.");
+                return;
+            }
+
+            if (!chatConnection || chatConnection.state !== 'Connected') {
+                showCustomAlert("Ошибка: нет соединения с сервером. Попробуйте переоткрыть чат.");
+                return;
+            }
+
+            // Отключаем кнопку на время отправки
+            chatSendBtn.disabled = true;
+            chatSendBtn.textContent = 'Отправка...';
+
+            chatConnection.invoke("SendMessageToCenter", currentChatCenterId.toString(), text)
+                .then(() => {
+                    chatInput.value = '';
+                    chatInput.focus();
+                })
+                .catch(err => {
+                    console.error("Ошибка отправки сообщения:", err);
+                    showCustomAlert("Не удалось отправить сообщение. Проверьте соединение.");
+                })
+                .finally(() => {
+                    chatSendBtn.disabled = false;
+                    chatSendBtn.textContent = 'Отправить';
+                });
+        }
+
+        // Обработчики событий чата
+
+        // Кнопка "Чат центра"
+        if (openChatBtn) {
+            openChatBtn.addEventListener('click', openCenterChat);
+        }
+
+        // Кнопка закрытия чата
+        if (chatCloseBtn) {
+            chatCloseBtn.addEventListener('click', function () {
+                hideCustomModal(chatModal);
+            });
+        }
+
+        // Кнопка "Отправить"
+        if (chatSendBtn) {
+            chatSendBtn.addEventListener('click', sendChatMessage);
+        }
+
+        // Отправка по Enter
+        if (chatInput) {
+            chatInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendChatMessage();
+                }
+            });
+        }
+
+        // Закрытие чата по клику на оверлей
+        if (chatModal) {
+            chatModal.addEventListener('click', function (e) {
+                if (e.target === chatModal) {
+                    hideCustomModal(chatModal);
+                }
             });
         }
 
