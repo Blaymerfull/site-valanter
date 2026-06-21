@@ -104,11 +104,9 @@
             /* Горизонтальная лента карточек */
             .events-horizontal-list {
                 display: flex;
-                gap: 20px;
-                overflow-x: auto;
-                overflow-y: visible;
-                padding: 15px 15px 25px 15px;
-                margin: 0 -15px;
+                flex-wrap: wrap;      
+                gap: 20px;             
+                padding: 15px 0;
                 box-sizing: border-box;
             }
 
@@ -133,7 +131,9 @@
             /* Карточка конкретного мероприятия */
             /* Базовое состояние карточки мероприятия */
             .event-card {
-                flex: 0 0 280px;
+                width: calc(33.333% - 14px); 
+                min-width: 260px; 
+                box-sizing: border-box;
                 background: #1f1f1f;
                 border: 1px solid #2d2d2d;
                 border-radius: 6px;
@@ -409,16 +409,21 @@
             }
 
             /* Контентные блоки */
-            .custom-modal-content {
-                background: #141414;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 8px;
-                position: relative;
-                width: 100%;
-                color: white;
-                box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
-            }
+        .custom-modal-content {
+            background: #141414;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 8px;
+            position: relative;
+            width: 100%;
+            color: white;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+
+            max-height: 85vh; 
+            overflow-y: auto; 
+            box-sizing: border-box; 
+          
+        }
 
             .auth-box {
                 max-width: 400px;
