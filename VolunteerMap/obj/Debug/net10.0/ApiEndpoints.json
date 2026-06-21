@@ -33,6 +33,22 @@
   },
   {
     "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
+    "Method": "CancelApplication",
+    "RelativePath": "api/Applications/cancel/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.ApplicationsController",
     "Method": "GetPendingApplications",
     "RelativePath": "api/Applications/pending",
     "HttpMethod": "GET",
@@ -89,6 +105,22 @@
       {
         "Name": "userId",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.AuthController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/Auth/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "VolunteerMap.Controllers.ChangePasswordModel",
         "IsRequired": true
       }
     ],
@@ -187,6 +219,22 @@
     "Method": "ApproveEvent",
     "RelativePath": "api/Events/approve/{id}",
     "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VolunteerMap.Controllers.EventsController",
+    "Method": "CancelEventApplication",
+    "RelativePath": "api/Events/cancel/{id}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [

@@ -112,7 +112,23 @@ namespace VolunteerMap.Controllers
             return Ok(apps);
         }
 
-        // 6. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
+        // 6. ОТМЕНА ЗАЯВКИ ПОЛЬЗОВАТЕЛЕМ (DELETE: api/applications/cancel/{id})
+        [HttpDelete("cancel/{id}")]
+        public async Task<IActionResult> CancelApplication(int id)
+        {
+            var app = await _context.VolunteerApplications.FindAsync(id);
+            if (app == null) return NotFound(new { message = "Заявка не найдена." });
+
+            if (app.Status != "Pending")
+                return BadRequest(new { message = "Можно отменить только заявку на рассмотрении." });
+
+            _context.VolunteerApplications.Remove(app);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Заявка успешно отменена." });
+        }
+
+        // 7. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateApplication(int id, [FromBody] VolunteerApplication updatedApp)
         {
