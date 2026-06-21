@@ -20,6 +20,9 @@
                 padding: 40px;
                 background: #141414;
                 color: white;
+                 max-height: 75vh;       /* Ограничиваем высоту окна до 75% от экрана */
+                overflow-y: auto;       /* Включаем вертикальный скролл, если текст не влезает */
+                box-sizing: border-box; /* Чтобы паддинги не ломали высоту */
             }
 
                 .event-view-info-block h1 {
@@ -1268,7 +1271,7 @@
 
     <!-- Модальное окно ДЕТАЛЬНОГО ПРОСМОТРА МЕРОПРИЯТИЯ -->
     <div id="event-view-modal" class="custom-modal-overlay" style="z-index: 300000;">
-        <div class="custom-modal-content" style="max-width: 700px; padding: 0; overflow: hidden; border-radius: 15px;">
+        <div class="custom-modal-content" style="max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; position: relative; margin: 30px auto; box-sizing: border-box; padding: 0;">
 
             <!-- Нижняя панель управления администратора для мероприятий -->
             <div id="admin-event-fixed-panel" class="admin-bottom-panel" style="display: none; z-index: 300002;">
@@ -1310,33 +1313,25 @@
     </div>
 
     <!-- НОВОЕ: Модальное окно личного кабинета -->
-    <div id="personal-account-modal" class="custom-modal-overlay">
-        <div class="custom-modal-content form-box" style="max-width: 900px;">
-            <span class="custom-close-modal" id="close-personal-account-btn">&times;</span>
-            <h2 class="modal-title">Личный кабинет</h2>
+<div id="personal-account-modal" class="custom-modal-overlay">
+    <div class="custom-modal-content form-box" style="max-width: 900px;">
+        <span class="custom-close-modal" id="close-personal-account-btn">&times;</span>
+        <h2 class="modal-title" style="margin-bottom: 20px;">Личный кабинет</h2>
 
-            <div class="personal-account-info" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #333;">
-                <p style="font-size: 1.1em; color: #eee;">Email: <b id="account-email"></b></p>
-                <p style="font-size: 1.1em; color: #eee;">Роль: <b id="account-role"></b></p>
-            </div>
+        <!-- Информация о пользователе -->
+        <div class="personal-account-info" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #333;">
+            <p style="font-size: 1.1em; color: #eee; margin: 5px 0;">Email: <b id="account-email"></b></p>
+            <p style="font-size: 1.1em; color: #eee; margin: 5px 0;">Роль: <b id="account-role"></b></p>
+        </div>
 
-            <!-- Смена пароля -->
-            <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #333;">
-                <h3 style="color: white; margin-top: 0;">Смена пароля</h3>
-                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-                    <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-                        <input type="password" id="change-current-password" placeholder="Текущий пароль" style="padding: 10px;">
-                    </div>
-                    <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-                        <input type="password" id="change-new-password" placeholder="Новый пароль" style="padding: 10px;">
-                    </div>
-                    <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
-                        <input type="password" id="change-confirm-password" placeholder="Подтвердите пароль" style="padding: 10px;">
-                    </div>
-                    <button id="change-password-btn" class="nav-btn" style="margin: 0; background: #333; height: 42px;">Сохранить пароль</button>
-                </div>
-            </div>
+        <!-- ГЛАВНЫЕ ВЕРХНИЕ ТАБЫ КАБИНЕТА -->
+        <div class="main-cabinet-tabs" style="display: flex; gap: 15px; border-bottom: 1px solid #333; margin-bottom: 25px;">
+            <button class="tab-link active" id="main-tab-profile-btn" type="button">Мой профиль</button>
+            <button class="tab-link" id="main-tab-security-btn" type="button">Безопасность</button>
+        </div>
 
+        <!-- ================= ВКЛАДКА 1: ПРОФИЛЬ (ЗАЯВКИ И ФИЛЬТРЫ) ================= -->
+        <div id="main-profile-panel" class="main-tab-panel" style="display: block;">
             <!-- Вкладки для заявок пользователя -->
             <div class="events-tabs" style="margin-bottom: 20px;">
                 <button class="tab-link active" id="tab-my-centers-btn">Мои заявки на центры</button>
@@ -1368,7 +1363,26 @@
                 </div>
             </div>
         </div>
+
+        <!-- ================= ВКЛАДКА 2: БЕЗОПАСНОСТЬ (СМЕНА ПАРОЛЯ) ================= -->
+        <div id="main-security-panel" class="main-tab-panel" style="display: none;">
+            <h3 style="color: white; margin-top: 0; margin-bottom: 20px;">Смена пароля</h3>
+            <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+                    <input type="password" id="change-current-password" placeholder="Текущий пароль" style="padding: 10px; width: 100%; box-sizing: border-box;">
+                </div>
+                <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+                    <input type="password" id="change-new-password" placeholder="Новый пароль" style="padding: 10px; width: 100%; box-sizing: border-box;">
+                </div>
+                <div class="input-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+                    <input type="password" id="change-confirm-password" placeholder="Подтвердите пароль" style="padding: 10px; width: 100%; box-sizing: border-box;">
+                </div>
+                <button id="change-password-btn" class="nav-btn" style="margin: 0; background: #333; height: 42px;">Сохранить пароль</button>
+            </div>
+        </div>
+
     </div>
+</div>
 
     <script>
         // ==========================================
@@ -3320,6 +3334,27 @@
             closePersonalAccountBtn.addEventListener('click', () => {
                 const personalAccountModal = document.getElementById('personal-account-modal');
                 if (personalAccountModal) hideCustomModal(personalAccountModal);
+            });
+        }
+        // Логика переключения главных вкладок личного кабинета (Профиль / Безопасность)
+        const mainTabProfileBtn = document.getElementById('main-tab-profile-btn');
+        const mainTabSecurityBtn = document.getElementById('main-tab-security-btn');
+        const mainProfilePanel = document.getElementById('main-profile-panel');
+        const mainSecurityPanel = document.getElementById('main-security-panel');
+
+        if (mainTabProfileBtn && mainTabSecurityBtn) {
+            mainTabProfileBtn.addEventListener('click', () => {
+                mainTabProfileBtn.classList.add('active');
+                mainTabSecurityBtn.classList.remove('active');
+                mainProfilePanel.style.display = 'block';
+                mainSecurityPanel.style.display = 'none';
+            });
+
+            mainTabSecurityBtn.addEventListener('click', () => {
+                mainTabSecurityBtn.classList.add('active');
+                mainTabProfileBtn.classList.remove('active');
+                mainProfilePanel.style.display = 'none';
+                mainSecurityPanel.style.display = 'block';
             });
         }
 
