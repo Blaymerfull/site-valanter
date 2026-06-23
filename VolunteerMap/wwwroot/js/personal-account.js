@@ -152,7 +152,9 @@ window.editCenterApp = function (appId) {
     document.getElementById('app-description').value = app.description || '';
     document.getElementById('app-address').value = app.address || '';
     document.getElementById('app-contacts').value = app.contacts || '';
-    document.getElementById('app-image').value = app.imageUrl || '';
+    // File input не позволяет программно устанавливать значение
+    const appImageFile = document.getElementById('app-image-file');
+    if (appImageFile) appImageFile.value = '';
 
     if (appRegionSelect && appDistrictSelect) {
         loadRegionsToForm().then(() => {

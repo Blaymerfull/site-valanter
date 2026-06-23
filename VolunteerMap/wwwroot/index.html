@@ -84,7 +84,7 @@
         <div class="custom-modal-content form-box">
             <span class="custom-close-modal" id="close-add-modal-btn">&times;</span>
             <h2 class="modal-title">Подать заявку на создание центра</h2>
-            <form id="center-application-form">
+            <form id="center-application-form" enctype="multipart/form-data">
                 <!-- Скрытое поле для хранения ID редактируемой заявки -->
                 <input type="hidden" id="edit-app-id" value="">
                 <input type="hidden" id="edit-center-id" value="">
@@ -101,7 +101,8 @@
                     <input type="text" id="app-contacts" placeholder="Контакты (Телефон, Email, Ссылка на ВК)" required>
                 </div>
                 <div class="input-group">
-                    <input type="url" id="app-image" placeholder="Ссылка на изображение/логотип (URL)">
+                    <label style="color: #aaa; font-size: 0.85em; display: block; margin-bottom: 5px;">Логотип / Изображение центра (Загрузка с ПК)</label>
+                    <input type="file" id="app-image-file" accept="image/*">
                 </div>
                 <div class="input-group">
                     <select id="app-region" required>

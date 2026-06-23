@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VolunteerMap.Models;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace VolunteerMap.Controllers
 {
@@ -9,20 +12,38 @@ namespace VolunteerMap.Controllers
     public class ApplicationsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public ApplicationsController(ApplicationDbContext context)
+        public ApplicationsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env; // Используем для определения физического пути к wwwroot
         }
 
         // 1. ПОДАЧА ЗАЯВКИ ПОЛЬЗОВАТЕЛЕМ (POST: api/applications)
         [HttpPost]
-        public async Task<IActionResult> CreateApplication([FromBody] VolunteerApplication app)
+        public async Task<IActionResult> CreateApplication([FromForm] VolunteerApplicationForm form)
         {
-            if (app == null) return BadRequest("Некорректные данные формы.");
+            if (form == null) return BadRequest("Некорректные данные формы.");
 
-            app.Status = "Pending"; // Принудительно ставим статус ожидания
-            app.CreatedAt = DateTime.Now;
+            string? savedImagePath = null;
+            if (form.ImageFile != null)
+            {
+                savedImagePath = await SaveFileAsync(form.ImageFile);
+            }
+
+            var app = new VolunteerApplication
+            {
+                DistrictId = form.DistrictId,
+                UserId = form.UserId,
+                Name = form.Name,
+                Description = form.Description,
+                Address = form.Address,
+                Contacts = form.Contacts,
+                ImageUrl = savedImagePath,
+                Status = "Pending",
+                CreatedAt = DateTime.Now
+            };
 
             _context.VolunteerApplications.Add(app);
             await _context.SaveChangesAsync();
@@ -146,22 +167,60 @@ namespace VolunteerMap.Controllers
 
         // 7. ОБНОВЛЕНИЕ ДАННЫХ ЗАЯВКИ АДМИНИСТРАТОРОМ (PUT: api/applications/update/{id})
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateApplication(int id, [FromBody] VolunteerApplication updatedApp)
+        public async Task<IActionResult> UpdateApplication(int id, [FromForm] VolunteerApplicationForm form)
         {
             var app = await _context.VolunteerApplications.FindAsync(id);
             if (app == null) return NotFound("Заявка не найдена.");
 
             // Обновляем поля заявки измененными данными из формы
-            app.Name = updatedApp.Name;
-            app.Description = updatedApp.Description;
-            app.Address = updatedApp.Address;
-            app.Contacts = updatedApp.Contacts;
-            app.ImageUrl = updatedApp.ImageUrl;
-            app.DistrictId = updatedApp.DistrictId; // Район тоже можно перезаписать
+            app.Name = form.Name;
+            app.Description = form.Description;
+            app.Address = form.Address;
+            app.Contacts = form.Contacts;
+            app.DistrictId = form.DistrictId;
+
+            // Если админ загрузил новое изображение с ПК — обновляем его
+            if (form.ImageFile != null)
+            {
+                app.ImageUrl = await SaveFileAsync(form.ImageFile);
+            }
 
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Данные заявки успешно скорректированы!" });
         }
+
+        // Вспомогательный асинхронный метод для сохранения бинарного файла на диск ПК
+        private async Task<string> SaveFileAsync(IFormFile file)
+        {
+            // Генерируем уникальное имя файла с помощью GUID, чтобы избежать перезаписи файлов с одинаковыми именами
+            var extension = Path.GetExtension(file.FileName);
+            var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+
+            // Физический путь: wwwroot/uploads/имя_файла.jpg
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            // Сохраняем поток данных на диск
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Возвращаем относительный путь веб-сервера для записи в БД
+            return $"/uploads/{uniqueFileName}";
+        }
+    }
+
+    // Вспомогательный DTO-класс (модель) для приема Multipart/Form-Data данных с фронтенда
+    public class VolunteerApplicationForm
+    {
+        public string DistrictId { get; set; }
+        public int UserId { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        public string? Address { get; set; }
+        public string? Contacts { get; set; }
+        public IFormFile? ImageFile { get; set; } // Сюда .NET Core автоматически положит бинарный файл с ПК
     }
 }

@@ -3094,11 +3094,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Blaym\\Desktop\\Диплом\\v5\\site-valanter\\VolunteerMap\\VolunteerMap.csproj",
+      "projectUniqueName": "C:\\Users\\Blaym\\Desktop\\Диплом\\v7\\site-valanter\\VolunteerMap\\VolunteerMap.csproj",
       "projectName": "VolunteerMap",
-      "projectPath": "C:\\Users\\Blaym\\Desktop\\Диплом\\v5\\site-valanter\\VolunteerMap\\VolunteerMap.csproj",
+      "projectPath": "C:\\Users\\Blaym\\Desktop\\Диплом\\v7\\site-valanter\\VolunteerMap\\VolunteerMap.csproj",
       "packagesPath": "C:\\Users\\Blaym\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Blaym\\Desktop\\Диплом\\v5\\site-valanter\\VolunteerMap\\obj\\",
+      "outputPath": "C:\\Users\\Blaym\\Desktop\\Диплом\\v7\\site-valanter\\VolunteerMap\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

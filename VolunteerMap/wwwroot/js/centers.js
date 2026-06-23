@@ -244,13 +244,14 @@ function openFullView(center) {
                     const inputDesc = document.getElementById('app-description');
                     const inputAddr = document.getElementById('app-address');
                     const inputCont = document.getElementById('app-contacts');
-                    const inputImg = document.getElementById('app-image');
+                    const inputFile = document.getElementById('app-image-file');
 
                     if (inputName) { inputName.value = cName; console.log("Успех! Имя записано в поле:", cName); }
                     if (inputDesc) inputDesc.value = cDesc;
                     if (inputAddr) inputAddr.value = cAddr;
                     if (inputCont) inputCont.value = cCont;
-                    if (inputImg) inputImg.value = cImg;
+                    // File input не позволяет программно устанавливать значение - пользователь может загрузить новый файл при желании
+                    if (inputFile) inputFile.value = '';
 
                     const modalRegionSelect = document.getElementById('app-region');
                     const modalDistrictSelect = document.getElementById('app-district');
@@ -435,6 +436,10 @@ if (closeAddModalBtn) {
     closeAddModalBtn.onclick = function () {
         console.log("Клик по крестику отмены формы. Анализируем состояние экрана...");
 
+        // ЧИТАЕМ ID ДО ОЧИСТКИ ПОЛЕЙ
+        const editCenterIdField = document.getElementById('edit-center-id');
+        const editCenterId = editCenterIdField ? editCenterIdField.value : "";
+
         const addCenterModal = document.getElementById('add-center-modal');
         if (addCenterModal) {
             const editAppField = document.getElementById('edit-app-id');
@@ -460,14 +465,17 @@ if (closeAddModalBtn) {
             hideCustomModal(addCenterModal);
         }
 
-        const editCenterIdField = document.getElementById('edit-center-id');
-        const editCenterId = editCenterIdField ? editCenterIdField.value : "";
         const backBtnElem = document.getElementById('back-button');
 
         const centersView = document.getElementById('centers-view');
         const isCardsListOpen = centersView && (centersView.style.display === 'block' || centersView.style.opacity === '1');
 
         if (editCenterId && editCenterId !== "") {
+            // Восстанавливаем карточку центра через openFullView (гарантированно пересоздаёт всё)
+            if (currentActiveCenter) {
+                setTimeout(() => openFullView(currentActiveCenter), 100);
+            }
+
             if (isCardsListOpen) {
                 console.log("Админ отменил редактирование внутри списка карточек. Возвращаем кнопку 'Назад к карте'...");
                 if (backBtnElem) {
@@ -527,25 +535,90 @@ if (appForm) {
         const inputDesc = document.getElementById('app-description');
         const inputAddr = document.getElementById('app-address');
         const inputCont = document.getElementById('app-contacts');
-        const inputImg = document.getElementById('app-image');
+        const inputFile = document.getElementById('app-image-file');
 
-        const appData = {
-            districtId: inputDistrict ? inputDistrict.value : "",
-            name: inputName ? inputName.value : "",
-            description: inputDesc ? inputDesc.value : "",
-            address: inputAddr ? inputAddr.value : "",
-            contacts: inputCont ? inputCont.value : "",
-            imageUrl: inputImg ? inputImg.value : ""
-        };
+        // Собираем FormData для отправки файла (как в events.js)
+        const formData = new FormData();
+        formData.append('districtId', inputDistrict ? inputDistrict.value : "");
+        formData.append('name', inputName ? inputName.value : "");
+        formData.append('description', inputDesc ? inputDesc.value : "");
+        formData.append('address', inputAddr ? inputAddr.value : "");
+        formData.append('contacts', inputCont ? inputCont.value : "");
+
+        // Добавляем файл, если он выбран
+        if (inputFile && inputFile.files.length > 0) {
+            formData.append('imageFile', inputFile.files[0]);
+        }
 
         let url = '/api/applications';
         let method = 'POST';
 
         if (editCenterId && editCenterId !== "") {
             console.log("Сработало условие: Прямое обновление центра в БД. ID =", editCenterId);
+            // Для прямого обновления центра используем JSON (без файла)
             url = `/api/map/update-center/${editCenterId}`;
             method = 'PUT';
-            appData.centerId = parseInt(editCenterId);
+            const appData = {
+                centerId: parseInt(editCenterId),
+                districtId: inputDistrict ? inputDistrict.value : "",
+                name: inputName ? inputName.value : "",
+                description: inputDesc ? inputDesc.value : "",
+                address: inputAddr ? inputAddr.value : "",
+                contacts: inputCont ? inputCont.value : ""
+            };
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(appData)
+            })
+                .then(async response => {
+                    if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
+                    return response.json();
+                })
+                .then(async data => {
+                    await showCustomAlert(data.message);
+                    appForm.reset();
+
+                    if (document.getElementById('edit-app-id')) document.getElementById('edit-app-id').value = "";
+                    if (document.getElementById('edit-center-id')) document.getElementById('edit-center-id').value = "";
+                    if (document.getElementById('app-region')) document.getElementById('app-region').value = "";
+                    if (document.getElementById('app-district')) {
+                        document.getElementById('app-district').innerHTML = '<option value="" disabled selected>Сначала выберите регион</option>';
+                        document.getElementById('app-district').disabled = true;
+                    }
+
+                    hideCustomModal(document.getElementById('add-center-modal'));
+
+                    // Обновляем данные центра без перезагрузки страницы
+                    const updatedCenter = Object.assign({}, currentActiveCenter, {
+                        name: appData.name,
+                        description: appData.description,
+                        address: appData.address,
+                        contacts: appData.contacts,
+                        districtId: appData.districtId
+                    });
+                    currentActiveCenter = updatedCenter;
+
+                    // Обновляем данные в боковой панели со списком центров, если она видна
+                    const centersView = document.getElementById('centers-view');
+                    if (centersView && centersView.style.display === 'block' && currentDisplayedCenters.length > 0) {
+                        const editCenterIdNum = parseInt(editCenterId);
+                        const existingIndex = currentDisplayedCenters.findIndex(c => {
+                            const id = c.centerId || c.CenterId || c.id;
+                            return id === editCenterIdNum;
+                        });
+                        if (existingIndex !== -1) {
+                            currentDisplayedCenters[existingIndex] = Object.assign({}, currentDisplayedCenters[existingIndex], updatedCenter);
+                            renderCenters(currentDisplayedCenters);
+                        }
+                    }
+                    // Открываем карточку с обновленными данными
+                    setTimeout(() => openFullView(updatedCenter), 500);
+                })
+                .catch(async err => await showCustomAlert(err.message));
+
+            return; // Выходим, чтобы не выполнять код ниже
         }
         else if (editAppId && editAppId !== "") {
             console.log("Сработало условие: Редактирование черновика заявки. ID =", editAppId);
@@ -554,13 +627,12 @@ if (appForm) {
         }
         else {
             console.log("Сработало условие: Создание новой заявки пользователем.");
-            appData.userId = currentUser.userId;
+            formData.append('userId', currentUser.userId);
         }
 
         fetch(url, {
             method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(appData)
+            body: formData
         })
             .then(async response => {
                 if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
@@ -708,7 +780,9 @@ window.openEditAppForm = function (appId) {
     document.getElementById('app-description').value = app.description || '';
     document.getElementById('app-address').value = app.address || '';
     document.getElementById('app-contacts').value = app.contacts || '';
-    document.getElementById('app-image').value = app.imageUrl || '';
+    // File input не позволяет программно устанавливать значение
+    const appImageFile = document.getElementById('app-image-file');
+    if (appImageFile) appImageFile.value = '';
 
     if (appRegionSelect && appDistrictSelect) {
         loadRegionsToForm().then(() => {
