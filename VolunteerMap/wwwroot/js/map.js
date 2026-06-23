@@ -88,6 +88,7 @@ fetch('Blank_map_of_Russia-gray.svg')
                                         el.onclick = (ev) => {
                                             ev.stopPropagation();
                                             regionalContainer.classList.add('fade-out');
+                                            window.fadeOutMist && window.fadeOutMist(0.5);
 
                                             fetch(`/api/map/centers-by-district?name=${encodeURIComponent(label)}`)
                                                 .then(res => res.json())
@@ -146,6 +147,7 @@ backBtn.addEventListener('click', () => {
                     regionalContainer.style.opacity = '1';
                     backBtn.classList.add('visible');
                     backBtn.style.opacity = '1';
+                    window.fadeInMist && window.fadeInMist(0.8);
                 }, 50);
             }
         }, 500);
@@ -179,6 +181,7 @@ function closeEverythingAndShowRussia() {
             document.body.classList.remove('scanning');
             tooltip.style.visibility = 'visible';
             toggleAuthPanel(true);
+            window.fadeInMist && window.fadeInMist(0.8);
         }, 50);
 
     }, 500);
