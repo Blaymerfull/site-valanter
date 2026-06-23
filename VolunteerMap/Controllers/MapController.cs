@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VolunteerMap.Models;
+using System.IO;
+using System;
+using System.Threading.Tasks;
 
 namespace VolunteerMap.Controllers
 {
@@ -10,10 +13,12 @@ namespace VolunteerMap.Controllers
     public class MapController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public MapController(ApplicationDbContext context)
+        public MapController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // 1. Получить все регионы для формы (GET: api/map/regions)
@@ -135,26 +140,48 @@ namespace VolunteerMap.Controllers
             return Ok(new { message = "Волонтерский центр успешно удален из системы!" });
         }
 
-        // 6. ИЗМЕНЕНИЕ СУЩЕСТВУЮЩЕГО ЦЕНТРА АДМИНИСТРАТОРОМ
+        // 6. ИЗМЕНЕНИЕ СУЩЕСТВУЮЩЕГО ЦЕНТРА АДМИНИСТРАТОРОМ (с поддержкой загрузки фото)
         [HttpPut("update-center/{id}")]
-        public async Task<IActionResult> UpdateCenter(int id, [FromBody] VolunteerCenter updatedCenter)
+        public async Task<IActionResult> UpdateCenter(int id, [FromForm] VolunteerCenterForm form)
         {
             var center = await _context.VolunteerCenters.FindAsync(id);
             if (center == null) return NotFound(new { message = "Волонтерский центр не найден." });
 
-            center.Name = updatedCenter.Name;
-            center.Description = updatedCenter.Description;
-            center.Address = updatedCenter.Address;
-            center.Contacts = updatedCenter.Contacts;
-            // Обновлять ImageUrl только если клиент явно передал не-null и не-пустое значение.
-            // Если админ не выбрал новую картинку — оставляем старую.
-            if (!string.IsNullOrEmpty(updatedCenter.ImageUrl))
-                center.ImageUrl = updatedCenter.ImageUrl;
-            center.DistrictId = updatedCenter.DistrictId;
+            center.Name = form.Name;
+            center.Description = form.Description;
+            center.Address = form.Address;
+            center.Contacts = form.Contacts;
+            center.DistrictId = form.DistrictId;
+
+            // Если админ загрузил новое фото с ПК — сохраняем и обновляем ImageUrl
+            if (form.ImageFile != null)
+            {
+                var extension = Path.GetExtension(form.ImageFile.FileName);
+                var uniqueFileName = $"{Guid.NewGuid()}{extension}";
+                var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await form.ImageFile.CopyToAsync(stream);
+                }
+                center.ImageUrl = $"/uploads/{uniqueFileName}";
+            }
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Данные волонтерского центра успешно обновлены!" });
+            return Ok(new { message = "Данные волонтерского центра успешно обновлены!", imageUrl = center.ImageUrl });
         }
+    }
+
+    // Вспомогательный DTO-класс для приема Multipart/Form-Data данных с фронтенда
+    public class VolunteerCenterForm
+    {
+        public string DistrictId { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        public string? Address { get; set; }
+        public string? Contacts { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }

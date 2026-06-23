@@ -1564,7 +1564,6 @@ C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net1
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\dwt5rujdb4-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\tsgqwxreuw-{0}-vfwz5au94w-vfwz5au94w.gz
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\deyb9yt2xs-{0}-lg7e29tg2n-lg7e29tg2n.gz
-C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\u5wmmn0qet-{0}-ngc5mjw5dk-ngc5mjw5dk.gz
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\17gybr6zvk-{0}-894e4amksb-894e4amksb.gz
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\lxehwsuxcz-{0}-hoz92lcqgj-hoz92lcqgj.gz
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\31g6xtssft-{0}-djngdt79su-djngdt79su.gz
@@ -1644,10 +1643,11 @@ C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net1
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\Voluntee.197606C5.Up2Date
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.dll
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\refint\VolunteerMap.dll
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.pdb
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.genruntimeconfig.cache
 C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\ref\VolunteerMap.dll
+c:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\u5wmmn0qet-{0}-yy8jgmqb87-yy8jgmqb87.gz
+C:\Users\Blaym\Desktop\Диплом\v8\site-valanter\VolunteerMap\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

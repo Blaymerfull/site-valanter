@@ -555,28 +555,26 @@ if (appForm) {
 
         if (editCenterId && editCenterId !== "") {
             console.log("Сработало условие: Прямое обновление центра в БД. ID =", editCenterId);
-            // Для прямого обновления центра используем JSON (без файла)
+            // Для прямого обновления центра используем FormData (с возможностью загрузки фото)
             url = `/api/map/update-center/${editCenterId}`;
             method = 'PUT';
-            const appData = {
-                centerId: parseInt(editCenterId),
-                districtId: inputDistrict ? inputDistrict.value : "",
-                name: inputName ? inputName.value : "",
-                description: inputDesc ? inputDesc.value : "",
-                address: inputAddr ? inputAddr.value : "",
-                contacts: inputCont ? inputCont.value : ""
-            };
 
             fetch(url, {
                 method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(appData)
+                body: formData
             })
                 .then(async response => {
                     if (!response.ok) throw new Error('Не удалось обработать запрос к серверу.');
                     return response.json();
                 })
                 .then(async data => {
+                    // ЧИТАЕМ ПОЛЯ ДО СБРОСА ФОРМЫ (чтобы не потерять данные)
+                    const formName = inputName ? inputName.value : "";
+                    const formDesc = inputDesc ? inputDesc.value : "";
+                    const formAddr = inputAddr ? inputAddr.value : "";
+                    const formCont = inputCont ? inputCont.value : "";
+                    const formDistrict = inputDistrict ? inputDistrict.value : "";
+
                     await showCustomAlert(data.message);
                     appForm.reset();
 
@@ -590,14 +588,20 @@ if (appForm) {
 
                     hideCustomModal(document.getElementById('add-center-modal'));
 
-                    // Обновляем данные центра без перезагрузки страницы
-                    const updatedCenter = Object.assign({}, currentActiveCenter, {
-                        name: appData.name,
-                        description: appData.description,
-                        address: appData.address,
-                        contacts: appData.contacts,
-                        districtId: appData.districtId
-                    });
+                    // Составляем объект с обновленными данными для клиента
+                    const updatedFields = {
+                        name: formName,
+                        description: formDesc,
+                        address: formAddr,
+                        contacts: formCont,
+                        districtId: formDistrict
+                    };
+
+                    // Если сервер вернул новый imageUrl (админ загрузил новое фото) — используем его
+                    if (data.imageUrl) {
+                        updatedFields.imageUrl = data.imageUrl;
+                    }
+                    const updatedCenter = Object.assign({}, currentActiveCenter, updatedFields);
                     currentActiveCenter = updatedCenter;
 
                     // Обновляем данные в боковой панели со списком центров, если она видна
@@ -652,39 +656,7 @@ if (appForm) {
 
                 hideCustomModal(document.getElementById('add-center-modal'));
 
-                if (editCenterId) {
-                    // Обновляем данные центра без перезагрузки страницы
-                    // Используем данные из формы, которые только что отправили
-                    const updatedCenter = Object.assign({}, currentActiveCenter, {
-                        name: appData.name,
-                        description: appData.description,
-                        address: appData.address,
-                        contacts: appData.contacts,
-                        imageUrl: appData.imageUrl,
-                        districtId: appData.districtId
-                    });
-                    currentActiveCenter = updatedCenter;
-
-                    // Обновляем данные в боковой панели со списком центров, если она видна
-                    const centersView = document.getElementById('centers-view');
-                    if (centersView && centersView.style.display === 'block' && currentDisplayedCenters.length > 0) {
-                        // Находим индекс отредактированного центра в массиве
-                        const editCenterIdNum = parseInt(editCenterId);
-                        const existingIndex = currentDisplayedCenters.findIndex(c => {
-                            const id = c.centerId || c.CenterId || c.id;
-                            return id === editCenterIdNum;
-                        });
-                        if (existingIndex !== -1) {
-                            // Обновляем данные в массиве
-                            currentDisplayedCenters[existingIndex] = Object.assign({}, currentDisplayedCenters[existingIndex], updatedCenter);
-                            // Перерисовываем список
-                            renderCenters(currentDisplayedCenters);
-                        }
-                    }
-                    // Открываем карточку с обновленными данными
-                    setTimeout(() => openFullView(updatedCenter), 500);
-                }
-                else if (editAppId) {
+                if (editAppId) {
                     // Если редактировали из личного кабинета — возвращаемся в личный кабинет
                     if (editingFromPersonalAccount) {
                         editingFromPersonalAccount = false;
