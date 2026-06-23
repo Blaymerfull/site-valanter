@@ -104,10 +104,26 @@ namespace VolunteerMap.Controllers
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetUserApplications(int userId)
         {
-            var apps = await _context.VolunteerApplications
-                .Where(a => a.UserId == userId)
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync();
+            var apps = await (from a in _context.VolunteerApplications
+                              join d in _context.Districts on a.DistrictId.ToString() equals d.DistrictId into distJoin
+                              from d in distJoin.DefaultIfEmpty()
+                              where a.UserId == userId
+                              orderby a.CreatedAt descending
+                              select new
+                              {
+                                  a.ApplicationId,
+                                  a.DistrictId,
+                                  a.UserId,
+                                  a.Name,
+                                  a.Description,
+                                  a.Address,
+                                  a.Contacts,
+                                  a.ImageUrl,
+                                  a.Status,
+                                  a.CreatedAt,
+                                  RegionId = d != null ? d.ParentRegionId : null
+                              })
+                              .ToListAsync();
 
             return Ok(apps);
         }
