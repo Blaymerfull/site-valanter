@@ -1071,7 +1071,6 @@ C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net1
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\scopedcss\bundle\VolunteerMap.styles.css
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\scopedcss\projectbundle\VolunteerMap.bundle.scp.css
-C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\yi6xy0b18q-{0}-697rv3wciq-697rv3wciq.gz
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\r36dg3ht18-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\dwt5rujdb4-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\h6b82gt6wa-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
@@ -1151,4 +1150,17 @@ C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net1
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.pdb
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\VolunteerMap.genruntimeconfig.cache
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\ref\VolunteerMap.dll
-C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\tsgqwxreuw-{0}-2ucsy6d28r-2ucsy6d28r.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\0895iajmsr-{0}-wn0x641iff-wn0x641iff.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\deyb9yt2xs-{0}-lg7e29tg2n-lg7e29tg2n.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\17gybr6zvk-{0}-894e4amksb-894e4amksb.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\lxehwsuxcz-{0}-hoz92lcqgj-hoz92lcqgj.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\uieuvw6f1t-{0}-b8tnpdfry8-b8tnpdfry8.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\xe45u2s1dy-{0}-1071wl2b60-1071wl2b60.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\31g6xtssft-{0}-djngdt79su-djngdt79su.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\yi6xy0b18q-{0}-yglzamjwgn-yglzamjwgn.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\u5wmmn0qet-{0}-udps15byj2-udps15byj2.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\xfo3g0o3kx-{0}-mkfsb8va82-mkfsb8va82.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\va1dakjno0-{0}-xr056r1ye8-xr056r1ye8.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\tsgqwxreuw-{0}-uy5ryxzbci-uy5ryxzbci.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\7c4sbtqph5-{0}-0fjcbasqrb-0fjcbasqrb.gz
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\obj\Debug\net10.0\compressed\u9gw3jy164-{0}-qmud9ijyvk-qmud9ijyvk.gz

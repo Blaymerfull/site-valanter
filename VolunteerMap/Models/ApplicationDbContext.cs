@@ -17,4 +17,6 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Event> Events { get; set; }
     public DbSet<EventApplication> EventApplications { get; set; }
+
+    public DbSet<ChatMessage> CenterChatMessages { get; set; }
 }

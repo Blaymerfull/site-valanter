@@ -66,6 +66,23 @@ namespace VolunteerMap.Controllers
             });
         }
 
+        // МАРШРУТ ДЛЯ СМЕНЫ ПАРОЛЯ (PUT: api/auth/change-password)
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        {
+            var user = await _context.Users.FindAsync(model.UserId);
+            if (user == null) return NotFound(new { message = "Пользователь не найден." });
+
+            string currentHash = HashPassword(model.CurrentPassword);
+            if (user.PasswordHash != currentHash)
+                return BadRequest(new { message = "Текущий пароль введён неверно." });
+
+            user.PasswordHash = HashPassword(model.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Пароль успешно изменён!" });
+        }
+
         // Метод для хэширования паролей
         private string HashPassword(string password)
         {
@@ -87,5 +104,13 @@ namespace VolunteerMap.Controllers
     {
         public string Email { get; set; }
         public string Password { get; set; }
+    }
+
+    // Класс-модель для смены пароля
+    public class ChangePasswordModel
+    {
+        public int UserId { get; set; }
+        public string CurrentPassword { get; set; }
+        public string NewPassword { get; set; }
     }
 }

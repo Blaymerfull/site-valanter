@@ -152,7 +152,23 @@ namespace VolunteerMap.Controllers
             return $"/uploads/{uniqueFileName}";
         }
 
-        // 6. УДАЛЕНИЕ МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (DELETE: api/events/delete/{id})
+        // 6. ОТМЕНА ЗАЯВКИ НА МЕРОПРИЯТИЕ ПОЛЬЗОВАТЕЛЕМ (DELETE: api/events/cancel/{id})
+        [HttpDelete("cancel/{id}")]
+        public async Task<IActionResult> CancelEventApplication(int id)
+        {
+            var app = await _context.EventApplications.FindAsync(id);
+            if (app == null) return NotFound(new { message = "Заявка на мероприятие не найдена." });
+
+            if (app.Status != "Pending")
+                return BadRequest(new { message = "Можно отменить только заявку на рассмотрении." });
+
+            _context.EventApplications.Remove(app);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Заявка на мероприятие успешно отменена." });
+        }
+
+        // 7. УДАЛЕНИЕ МЕРОПРИЯТИЯ АДМИНИСТРАТОРОМ (DELETE: api/events/delete/{id})
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
