@@ -146,7 +146,10 @@ namespace VolunteerMap.Controllers
             center.Description = updatedCenter.Description;
             center.Address = updatedCenter.Address;
             center.Contacts = updatedCenter.Contacts;
-            center.ImageUrl = updatedCenter.ImageUrl;
+            // Обновлять ImageUrl только если клиент явно передал не-null и не-пустое значение.
+            // Если админ не выбрал новую картинку — оставляем старую.
+            if (!string.IsNullOrEmpty(updatedCenter.ImageUrl))
+                center.ImageUrl = updatedCenter.ImageUrl;
             center.DistrictId = updatedCenter.DistrictId;
 
             await _context.SaveChangesAsync();
