@@ -95,7 +95,7 @@ fetch('Blank_map_of_Russia-gray.svg')
                                                     setTimeout(() => {
                                                         regionalContainer.style.display = 'none';
                                                         regionalContainer.classList.remove('fade-out');
-                                                        renderCenters(data);
+                                                        renderCenters(data, label);
                                                     }, 600);
                                                 });
                                         };
@@ -124,6 +124,10 @@ backBtn.addEventListener('click', () => {
 
     if (centersView && centersView.style.display === 'block') {
         console.log("Запускаем плавный откат от карточек к карте Кемеровской области...");
+
+        // Очищаем поле поиска центров
+        const centersSearchInput = document.getElementById('centers-search-input');
+        if (centersSearchInput) centersSearchInput.value = '';
 
         centersView.classList.add('fade-out');
         backBtn.classList.remove('visible');

@@ -26,13 +26,76 @@ function toggleAuthPanel(show) {
     }
 }
 
-function renderCenters(data) {
+// Функция фильтрации и отображения центров
+function filterAndRenderCenters(query) {
+    if (!query || query.trim() === '') {
+        renderCenters(currentDisplayedCenters);
+        return;
+    }
+    const lowerQuery = query.toLowerCase().trim();
+    const filtered = currentDisplayedCenters.filter(c => {
+        const name = (c.name || c.Name || '').toLowerCase();
+        return name.includes(lowerQuery);
+    });
+    // Отображаем отфильтрованные данные, но НЕ перезаписываем currentDisplayedCenters
     const list = document.getElementById('centers-list');
     const centersView = document.getElementById('centers-view');
     centersView.style.display = 'block';
     centersView.style.opacity = '1';
     list.innerHTML = '';
     wrapper.classList.add('map-hidden');
+    filtered.forEach((c, index) => {
+        const card = document.createElement('div');
+        card.className = 'center-card';
+        card.innerHTML = `
+                ${c.imageUrl ? `<img src="${c.imageUrl}" onerror="this.style.display='none'">` : '<div class="no-photo">Нет фото</div>'}
+                <h2>${c.name}</h2>
+                <div class="card-description">${c.description || ''}</div>
+                <button class="more-btn" style="background:#e50914; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Подробнее</button>
+            `;
+        card.onclick = () => openFullView(c);
+        list.appendChild(card);
+        setTimeout(() => card.classList.add('animate'), index * 100);
+    });
+}
+
+// Обработчик поиска по карточкам центров
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('centers-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            filterAndRenderCenters(this.value);
+        });
+    }
+});
+
+function renderCenters(data, districtName) {
+    // Сохраняем данные для возможного обновления после редактирования
+    currentDisplayedCenters = data;
+
+    // Сохраняем название района для последующего использования
+    if (districtName !== undefined) {
+        currentDistrictName = districtName;
+    }
+
+    // Отображаем название района/области
+    const titleEl = document.getElementById('centers-district-title');
+    if (titleEl) {
+        titleEl.textContent = currentDistrictName || '';
+    }
+
+    const list = document.getElementById('centers-list');
+    const centersView = document.getElementById('centers-view');
+    centersView.style.display = 'block';
+    centersView.style.opacity = '1';
+    list.innerHTML = '';
+    wrapper.classList.add('map-hidden');
+
+    if (data.length === 0) {
+        list.innerHTML = '<p style="color:#888; text-align:center; padding: 40px 20px; font-size:1.1em;">В данном районе пока нет волонтёрских центров.</p>';
+        return;
+    }
+
     data.forEach((c, index) => {
         const card = document.createElement('div');
         card.className = 'center-card';
@@ -124,13 +187,27 @@ function openFullView(center) {
                             await showCustomAlert(data.message);
                             // Закрываем карточку центра
                             document.getElementById('close-modal').click();
-                            // Закрываем боковую панель центров, если открыта
+
+                            // Обновляем список центров в боковой панели, если открыта
                             const centersView = document.getElementById('centers-view');
-                            if (centersView && centersView.style.display === 'block') {
-                                const backBtnElem = document.getElementById('back-button');
-                                centersView.style.display = 'none';
-                                centersView.style.opacity = '0';
-                                if (backBtnElem) backBtnElem.classList.add('visible');
+                            if (centersView && centersView.style.display === 'block' && currentDisplayedCenters.length > 0) {
+                                // Удаляем центр из массива
+                                const deleteId = cId;
+                                const filteredCenters = currentDisplayedCenters.filter(c => {
+                                    const id = c.centerId || c.CenterId || c.id;
+                                    return id !== deleteId;
+                                });
+
+                                if (filteredCenters.length > 0) {
+                                    // Если ещё остались центры — перерисовываем список
+                                    currentDisplayedCenters = filteredCenters;
+                                    const searchInput = document.getElementById('centers-search-input');
+                                    const query = searchInput ? searchInput.value : '';
+                                    filterAndRenderCenters(query);
+                                } else {
+                                    // Если центров не осталось — возвращаемся к карте области
+                                    document.getElementById('back-button').click();
+                                }
                             }
                         })
                         .catch(async err => await showCustomAlert("Ошибка при удалении центра"));
@@ -515,6 +592,23 @@ if (appForm) {
                         districtId: appData.districtId
                     });
                     currentActiveCenter = updatedCenter;
+
+                    // Обновляем данные в боковой панели со списком центров, если она видна
+                    const centersView = document.getElementById('centers-view');
+                    if (centersView && centersView.style.display === 'block' && currentDisplayedCenters.length > 0) {
+                        // Находим индекс отредактированного центра в массиве
+                        const editCenterIdNum = parseInt(editCenterId);
+                        const existingIndex = currentDisplayedCenters.findIndex(c => {
+                            const id = c.centerId || c.CenterId || c.id;
+                            return id === editCenterIdNum;
+                        });
+                        if (existingIndex !== -1) {
+                            // Обновляем данные в массиве
+                            currentDisplayedCenters[existingIndex] = Object.assign({}, currentDisplayedCenters[existingIndex], updatedCenter);
+                            // Перерисовываем список
+                            renderCenters(currentDisplayedCenters);
+                        }
+                    }
                     // Открываем карточку с обновленными данными
                     setTimeout(() => openFullView(updatedCenter), 500);
                 }

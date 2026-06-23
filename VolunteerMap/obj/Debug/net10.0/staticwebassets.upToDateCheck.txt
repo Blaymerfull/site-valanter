@@ -1,8 +1,8 @@
+wwwroot\Blank_map_of_Russia-gray.svg
 wwwroot\css\auth.css
 wwwroot\css\main.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
-wwwroot\index.html
 wwwroot\js\auth.js
 wwwroot\js\centers.js
 wwwroot\js\chat.js
@@ -81,12 +81,12 @@ wwwroot\uploads\7d86bd94-af76-44d1-b3c1-8742973f751a.jpg
 wwwroot\uploads\94e13826-7fed-4053-9dd1-955b35ab0056.jpg
 wwwroot\uploads\bb3d5397-61d7-4b3b-8686-fc060da56036.png
 wwwroot\uploads\c601b488-c873-4710-9636-71535d8f5533.jpg
-wwwroot\Blank_map_of_Russia-gray.svg
+wwwroot\index.html
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\css\auth.css
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\css\main.css
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\css\site.css
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\favicon.ico
-C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\index.html
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\js\auth.js
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\js\centers.js
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\js\chat.js
@@ -159,4 +159,4 @@ C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\lib\jq
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast.svg
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\Outline_Map_of_Kemerovo_Oblast2.svg
 C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\README.md
-C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\Blank_map_of_Russia-gray.svg
+C:\Users\Blaym\Desktop\Диплом\v5\site-valanter\VolunteerMap\wwwroot\index.html
